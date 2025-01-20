@@ -1,0 +1,223 @@
+export const products = [
+    // Supermarket Category
+    {
+      id: 1,
+      title: "Organic Apples",
+      url: "https://example.com/images/organic-apples.jpg",
+      productprice: 500,
+      categories: "Supermarket",
+    },
+    {
+      id: 2,
+      title: "Whole Wheat Bread",
+      url: "https://example.com/images/whole-wheat-bread.jpg",
+      productprice: 300,
+      categories: "Supermarket",
+    },
+    {
+      id: 3,
+      title: "Fresh Milk",
+      url: "https://example.com/images/fresh-milk.jpg",
+      productprice: 250,
+      categories: "Supermarket",
+    },
+    {
+      id: 4,
+      title: "Free-Range Eggs",
+      url: "https://example.com/images/free-range-eggs.jpg",
+      productprice: 400,
+      categories: "Supermarket",
+    },
+    {
+      id: 5,
+      title: "Organic Bananas",
+      url: "https://example.com/images/organic-bananas.jpg",
+      productprice: 350,
+      categories: "Supermarket",
+    },
+    {
+      id: 6,
+      title: "Natural Yogurt",
+      url: "https://example.com/images/natural-yogurt.jpg",
+      productprice: 450,
+      categories: "Supermarket",
+    },
+  
+    // Electronics Category
+    {
+      id: 7,
+      title: "Smartphone X200",
+      url: "https://example.com/images/smartphone-x200.jpg",
+      productprice: 50000,
+      categories: "Electronics",
+    },
+    {
+      id: 8,
+      title: "4K LED TV 55 inch",
+      url: "https://example.com/images/4k-led-tv-55.jpg",
+      productprice: 150000,
+      categories: "Electronics",
+    },
+    {
+      id: 9,
+      title: "Bluetooth Headphones",
+      url: "https://example.com/images/bluetooth-headphones.jpg",
+      productprice: 8000,
+      categories: "Electronics",
+    },
+    {
+      id: 10,
+      title: "Smartwatch Pro",
+      url: "https://example.com/images/smartwatch-pro.jpg",
+      productprice: 20000,
+      categories: "Electronics",
+    },
+    {
+      id: 11,
+      title: "Digital Camera ZX5",
+      url: "https://example.com/images/digital-camera-zx5.jpg",
+      productprice: 75000,
+      categories: "Electronics",
+    },
+    {
+      id: 12,
+      title: "Wireless Speaker",
+      url: "https://example.com/images/wireless-speaker.jpg",
+      productprice: 12000,
+      categories: "Electronics",
+    },
+  
+    // Gaming Category
+    {
+      id: 13,
+      title: "Gaming Console Y",
+      url: "https://example.com/images/gaming-console-y.jpg",
+      productprice: 120000,
+      categories: "Gaming",
+    },
+    {
+      id: 14,
+      title: "VR Headset Z",
+      url: "https://example.com/images/vr-headset-z.jpg",
+      productprice: 45000,
+      categories: "Gaming",
+    },
+    {
+      id: 15,
+      title: "Wireless Gaming Mouse",
+      url: "https://example.com/images/wireless-gaming-mouse.jpg",
+      productprice: 7000,
+      categories: "Gaming",
+    },
+    {
+      id: 16,
+      title: "Mechanical Gaming Keyboard",
+      url: "https://example.com/images/mechanical-gaming-keyboard.jpg",
+      productprice: 15000,
+      categories: "Gaming",
+    },
+    {
+      id: 17,
+      title: "Gaming Chair Pro",
+      url: "https://example.com/images/gaming-chair-pro.jpg",
+      productprice: 35000,
+      categories: "Gaming",
+    },
+    {
+      id: 18,
+      title: "4K Gaming Monitor",
+      url: "https://example.com/images/4k-gaming-monitor.jpg",
+      productprice: 80000,
+      categories: "Gaming",
+    },
+  
+    // Health & Beauty Category
+    {
+      id: 19,
+      title: "Herbal Shampoo",
+      url: "https://example.com/images/herbal-shampoo.jpg",
+      productprice: 1500,
+      categories: "healthbeauty",
+    },
+    {
+      id: 20,
+      title: "Organic Face Cream",
+      url: "https://example.com/images/organic-face-cream.jpg",
+      productprice: 2500,
+      categories: "healthbeauty",
+    },
+    {
+      id: 21,
+      title: "Vitamin C Serum",
+      url: "https://example.com/images/vitamin-c-serum.jpg",
+      productprice: 3500,
+      categories: "healthbeauty",
+    },
+    {
+      id: 22,
+      title: "Aloe Vera Gel",
+      url: "https://example.com/images/aloe-vera-gel.jpg",
+      productprice: 1200,
+      categories: "healthbeautyy",
+    },
+    {
+      id: 23,
+      title: "Natural Lip Balm",
+      url: "https://example.com/images/natural-lip-balm.jpg",
+      productprice: 800,
+      categories: "healthbeauty",
+    },
+    {
+      id: 24,
+      title: "Sunscreen SPF 50",
+      url: "https://example.com/images/sunscreen-spf50.jpg",
+      productprice: 2200,
+      categories: "healthbeauty",
+    },
+  
+    // Home & Office Category
+    {
+      id: 25,
+      title: "Ergonomic Office Chair",
+      url: "https://example.com/images/ergonomic-office-chair.jpg",
+      productprice: 45000,
+      categories: "Home & Office",
+    },
+    {
+      id: 26,
+      title: "Wooden Bookshelf",
+      url: "https://example.com/images/wooden-bookshelf.jpg",
+      productprice: 30000,
+      categories: "Home & Office",
+    },
+    {
+      id: 27,
+      title: "LED Desk Lamp",
+      url: "https://example.com/images/led-desk-lamp.jpg",
+      productprice: 5000,
+      categories: "Home & Office",
+    },
+    {
+      id: 28,
+      title: "Standing Desk Converter",
+      url: "https://example.com/images/standing-desk-converter.jpg",
+      productprice: 20000,
+      categories: "Home & Office",
+    },
+    {
+      id: 29,
+      title: "Noise-Canceling Desk Divider",
+      url: "https://example.com/images/noise-canceling-desk-divider.jpg",
+      productprice: 15000,
+      categories: "Home & Office",
+    },
+    {
+      id: 30,
+      title: "Wireless Printer",
+      url: "https://example.com/images/wireless-printer.jpg",
+      productprice: 30000,
+      categories: "Home & Office",
+    },
+]
+   
+  
