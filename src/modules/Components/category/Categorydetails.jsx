@@ -5,29 +5,29 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-export default function CategoryDetails({ products }) {
+export default function CategoryDetails({  products}) {
   const navigate = useNavigate();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {products.map((product) => (
         <div
-          key={product.id}
+          key={product._id}
           className="bg-white shadow-lg rounded-lg p-4 flex flex-col"
         >
           <img
-            src={product.url}
+            src={product.imageUrl}
             alt={product.title}
             className="w-full h-48 object-cover rounded-t-lg"
           />
           <div className="mt-2">
             <Title level={5} className="line-clamp-2">
-              {product.title}
+              {product.name}
             </Title>
-            <Text>{formatCurrency(product.productprice)}</Text>
+            <Text>{formatCurrency(product.price)}</Text>
             <Button
               onClick={() =>
-                navigate(`/product/${product.id}`, {
+                navigate(`/product/${product._id}`, {
                   state: { product },
                 })
               }

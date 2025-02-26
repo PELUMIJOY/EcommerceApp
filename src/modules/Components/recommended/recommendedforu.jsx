@@ -1,40 +1,59 @@
 import React, { useEffect, useState } from "react";
 import Post from "./post";
 import RecomHeader from "./header";
-// import { fetchProductsbyCategory } from "@/lib/fetchData";
 import { Skeleton } from "antd";
 import { formatCurrency } from "../../../utils/helper";
-// import { formatCurrency } from "@/lib/help"; // Helper to format currency
+import { fetchItems } from "../../../api";
 
-const supermarket = [
-  { id: 1, title: "Product 1", url: "image1.jpg", productprice: 1000 },
-  { id: 2, title: "Product 2", url: "image2.jpg", productprice: 1500 },
-  // Add more products as needed
-];
-export default function Recommendedforu() {
-  const [posts, setPosts] = useState([]);
+export default function RecommendedForU() {
+  const [categories, setCategories] = useState([]); 
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategoryItems = async () => {
+      setLoading(true);
       try {
-        // const products = await fetchProductsbyCategory("supermarket");
-        const products = supermarket;
-        setPosts(products);
+        const data = await fetchItems();  // Fetch all products
+        // Group products by category ID
+        const groupedCategories = data.reduce((acc, product) => {
+          const categoryId = product.category?._id;
+          if (!acc[categoryId]) {
+            acc[categoryId] = {
+              title: product.category?.title || "Unknown Category",
+              products: [],
+            };
+          }
+          acc[categoryId].products.push(product);
+          return acc;
+        }, {});
+  
+        setCategories(Object.values(groupedCategories)); 
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Error fetching categories:", error);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchProducts();
+  
+    fetchCategoryItems();
   }, []);
+  
+  useEffect(() => {
+    if (categories.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % categories.length);
+    }, 5000);
 
+    return () => clearInterval(interval); 
+  }, [categories]);
+
+  const currentCategory = categories[currentCategoryIndex];
+ 
   return (
     <div className="pt-5">
       {/* Header */}
-      <RecomHeader title="Supermarket" color="bg-blue-400" />
+      <RecomHeader title={currentCategory?.title} color="bg-blue-400" />
 
       {/* Product Carousel */}
       <div className="bg-white p-4 rounded-lg shadow-lg">
@@ -42,16 +61,20 @@ export default function Recommendedforu() {
           <Skeleton active />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {posts.map((post) => (
+          {currentCategory?.products.length > 0 ? (
+            currentCategory?.products.map((post) => (
               <Post
-                key={post.id}
-                title={post.title}
-                image={post.url}
-                price={formatCurrency(post.productprice)}
-                id={post.id}
+                key={post._id}
+                title={post.name}
+                image={post.imageUrl}
+                price={formatCurrency(post.price)}
+                id={post._id}
               />
-            ))}
-          </div>
+            ))
+          ) : (
+            <p>No products in this category</p>
+          )}
+        </div>
         )}
       </div>
     </div>

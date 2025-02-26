@@ -8,6 +8,9 @@ const Vendor = () => {
       <aside className="w-64 bg-white shadow-md h-screen">
         <div className="p-4 font-bold text-lg">Vendor Center</div>
         <ul>
+        <li className="p-4 cursor-pointer">
+            <a href="/vendor/addCategory">Add Category</a>
+          </li>
           <li className="p-4 cursor-pointer">
             <a href="/vendor/addProduct">Add Products</a>
           </li>

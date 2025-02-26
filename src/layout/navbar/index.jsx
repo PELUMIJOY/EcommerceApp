@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   UserOutlined,
   QuestionCircleOutlined,
@@ -8,7 +8,7 @@ import {
   HeartOutlined,
   ShoppingOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown, Menu, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -16,14 +16,29 @@ import Elementthree from "./elementthree";
 import ShoppingCart from "./shoppingcart";
 import TableSearch from "../../common/TableSearch";
 import jumiaLogo from "../../assets/logo/jumiaLogo.png";
+import { fetchCategories, fetchItems } from "../../api";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const {isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const cart = useSelector((state) => state.cart?.items);
-  const user = useSelector((state) => state.auth.user); 
+  const user = useSelector((state) => state.auth.user);
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [categoriesData, setCategoriesData] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        // Assume data is an array of category objects
+        setCategoriesData(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    getCategories();
+  }, []);
 
   const handleMenuClick = ({ key }) => {
     if (key === "signin") {
@@ -31,7 +46,7 @@ export default function Navbar() {
     } else {
       navigate(`/${key}`);
     }
-    setDropdownOpen(false); 
+    setDropdownOpen(false);
   };
 
   const dropdownMenu = (
@@ -49,7 +64,7 @@ export default function Navbar() {
         {
           key: "register",
           label: (
-            <div className="flex items-center gap-2" >
+            <div className="flex items-center gap-2">
               <UserOutlined />
               <span>My Account</span>
             </div>
@@ -110,8 +125,46 @@ export default function Navbar() {
     setDropdownOpen(visible);
   };
 
+  const handleSearch = async () => {
+    const trimmed = searchValue.trim();
+    if (!trimmed) return;
+    const lowerQuery = trimmed.toLowerCase();
+
+    const matchedCategory = categoriesData.find(
+      (cat) => cat.title.toLowerCase() === lowerQuery
+    );
+    if (matchedCategory) {
+      navigate(`/category/${matchedCategory.title.toLowerCase()}`);
+      return;
+    }
+
+    try {
+      const products = await fetchItems({ name: trimmed });
+
+      const matchedProduct = products.find(
+        (prod) => prod.name.toLowerCase() === lowerQuery
+      );
+      if (matchedProduct) {
+        navigate(`/product/${matchedProduct._id}`, {
+          state: { product: matchedProduct },
+        });
+      } else {
+        notification.error({
+          message: "Product Not Found",
+          description: "No product matches the search term.",
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: "Search Error",
+        description: "An error occurred while searching for products.",
+      });
+    }
+  };
+
   const clearSearch = () => {
     setSearchValue("");
+    navigate("/");
   };
 
   return (
@@ -168,7 +221,10 @@ export default function Navbar() {
                 ),
               }}
             />
-            <Button className="bg-orange-500 text-[#FFF] h-[40px] text-md ">
+            <Button
+              className="bg-orange-500 text-[#FFF] h-[40px] text-md "
+              onClick={handleSearch}
+            >
               SEARCH
             </Button>
           </div>

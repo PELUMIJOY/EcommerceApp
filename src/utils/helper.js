@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 export const formatCurrency = (amount) => {
   const formatter = new Intl.NumberFormat("en-US", {
@@ -48,3 +49,12 @@ export const formatCurrency = (amount) => {
     return mobile;
   };
   
+
+  export const HumanFriendlyDate = (dateTime) => {
+    if (!dateTime || dateTime === "NA") {
+      return "N/A";
+    }
+    
+    const _dateTime = moment(dateTime);
+    return `${_dateTime.format("Do MMM, YYYY")}`;
+  };

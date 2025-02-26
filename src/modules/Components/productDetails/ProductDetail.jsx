@@ -11,9 +11,10 @@ import {
   selectCartItems,
 } from "../../../app/cartSlice";
 import { Card, Button, Badge, Carousel, Rate, notification } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 export default function ProductDetail() {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const location = useLocation();
   const { product: details } = location.state || {};
@@ -52,7 +53,6 @@ export default function ProductDetail() {
       notification.warning({ message: "Product was removed from cart successfully" });
     }
   };
-
   return (
     <div>
       <Breadcrumbs
@@ -64,17 +64,17 @@ export default function ProductDetail() {
       <div className="flex flex-col lg:flex-row p-3 space-x-4">
         <div className="w-full lg:w-[70%]">
           <div className="flex">
-            <Card className="flex bg-white p-2 rounded-lg shadow-lg">
+            {/* <Card className="flex bg-white p-2 rounded-lg shadow-lg"> */}
               <div className="w-[35%]">
                 <Carousel autoplay>
-                  {details.images?.map((image, index) => (
+                  {/* {details.images?.map((image, index) => ( */}
                     <img
-                      key={index}
-                      src={image}
-                      alt={`Product Image ${index + 1}`}
+                      // key={index}
+                      src={details.imageUrl}
+                      alt={`Product Image`}
                       className="w-full rounded-md"
                     />
-                  ))}
+                  {/* ))} */}
                 </Carousel>
 
                 <span className="text-lg mt-4 block">SHARE THIS PRODUCT</span>
@@ -83,19 +83,21 @@ export default function ProductDetail() {
                   <TwitterOutlined className="text-xl text-blue-400" />
                 </p>
               </div>
-            </Card>
+            {/* </Card> */}
             <div className="w-[65%] pl-4">
               <Badge.Ribbon text={details.brand} color="blue" />
-              <p className="text-2xl font-bold mt-2">{details.title}</p>
+              {/* <p className="text-2xl font-bold mt-2">{details.imageUrl}</p> */}
+              {/* <img src={details.imageUrl} alt="" /> */}
+              <p className="text-2xl font-bold mt-2">{details.name}</p>
               <hr className="my-2" />
               <div className="flex items-center space-x-2">
                 <b className="text-3xl text-black">
-                  {details.productprice.toLocaleString("en-NG", {
+                  {details.price.toLocaleString("en-NG", {
                     style: "currency",
                     currency: "NGN",
                   })}
                 </b>
-                {details.oldPrice && (
+                {details?.oldPrice && (
                   <span className="line-through text-gray-400 text-lg">
                     {details.oldPrice.toLocaleString("en-NG", {
                       style: "currency",
@@ -103,7 +105,7 @@ export default function ProductDetail() {
                     })}
                   </span>
                 )}
-                {details.discount && (
+                {details?.discount && (
                   <span className="text-red-600 text-lg">
                     -{details.discount}%
                   </span>
@@ -111,7 +113,7 @@ export default function ProductDetail() {
               </div>
 
               <p className="text-sm text-gray-400 mt-2">
-                {details.units === 0 ? (
+                {details.stock === 0 ? (
                   <span className="text-red-600">Out of Stock</span>
                 ) : (
                   "In Stock"
@@ -127,12 +129,12 @@ export default function ProductDetail() {
               </p>
 
               <p className="mt-2">
-                {!details.deliveryPrice ? (
+                {!details?.deliveryPrice ? (
                   <span className="text-green-600">Free Delivery</span>
                 ) : (
                   <span className="text-gray-500">
                     + shipping from{" "}
-                    {details.deliveryPrice.toLocaleString("en-NG", {
+                    {details?.deliveryPrice.toLocaleString("en-NG", {
                       style: "currency",
                       currency: "NGN",
                     })}
@@ -169,13 +171,17 @@ export default function ProductDetail() {
                   <p> {quantity} item(s) added </p>
                 </div>
               )}
-
+                <hr className="my-2" />
+              <p className="font-semibold mt-4"> Promotions</p>
+              <p>Call 07006000000 To Place Your Order</p>
+              <p>Need extra money? Loan up to N500,000 on the JumiaPay Android app.</p>
+            <p>Enjoy cheaper shipping fees when you select a PickUp Station at checkout.</p>
             </div>
           </div>
 
           <Moredetails
             specifications={details.specifications}
-            details={details.details}
+            details={details.description}
             features={details.features}
           />
         </div>

@@ -8,6 +8,7 @@ import Category from "../modules/components/category/Category";
 import Header from "../modules/components/header/Header";
 import ProductDetail from "../modules/Components/productDetails/ProductDetail";
 import SellOnJumia from "../modules/Components/SellOnJumia/SellOnJumia";
+import AddCategory from "../modules/Components/VendorCenter/AddCategory";
 import AddProduct from "../modules/Components/VendorCenter/AddProduct";
 import ManageOrder from "../modules/Components/VendorCenter/ManageOrder";
 import ManageProducts from "../modules/Components/VendorCenter/ManageProduct";
@@ -30,30 +31,34 @@ const routes = [
     path: "/vendorlogin",
     element: <VendorLogin />,
   },
-  
+
   {
     path: "/vendor",
-    element: <Vendor />, 
+    element: <Vendor />,
     children: [
       {
-        index: true, 
+        index: true,
         element: <AddProduct />,
       },
       {
-        path: "addProduct", 
+        path: "addProduct",
         element: <AddProduct />,
       },
       {
-        path: "products", 
+        path: "addCategory",
+        element: <AddCategory />,
+      },
+      {
+        path: "products",
         element: <ManageProducts />,
       },
       {
-        path: "orders", 
+        path: "orders",
         element: <ManageOrder />,
       },
     ],
   },
-  
+
   {
     path: "/",
     element: <DashboardShell />,
@@ -67,7 +72,7 @@ const routes = [
       { path: "product/:id", element: <ProductDetail /> },
       { path: "cart", element: <Cart /> },
     ],
-    Cart
+    Cart,
   },
 ];
 
