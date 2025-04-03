@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, Select, Checkbox, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  fetchAllZones,
+  fetchCountries,
+  fetchZonesByCountry,
+  requestOtp,
+  signup,
+  verifyOtp,
+} from "../../api";
 
 const { Option } = Select;
 
@@ -8,26 +17,155 @@ const SignUp = () => {
   const [step, setStep] = useState(1);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [identifier, setIdentifier] = useState("");
+  const [vendorData, setVendorData] = useState({
+    country: "",
+    shoppingZone: "",
+    shopName: "",
+    accountType: ""
+  });
 
-  const handleNext = () => {
-    form.validateFields().then(() => {
-      if (step < 5) {
-        setStep(step + 1);
-      } else {
-        message.success("Sign-up complete!");
-        navigate("/VendorLogin");
-      }
-    });
+  const [countries, setCountries] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [loading, setLoading] = useState({
+    countries: false,
+    zones: false,
+  });
+
+  // Fetch countries when component mounts
+  useEffect(() => {
+    fetchCountriesData();
+  }, []);
+
+  // Fetch zones when country changes
+  const handleCountryChange = async (value) => {
+    const selectedCountry = countries.find((country) => country.name === value);
+    if (selectedCountry) {
+      await fetchZonesData(selectedCountry.code);
+      setVendorData(prev => ({ ...prev, country: value }));
+    }
   };
 
-  const shoppingZones = [
-    "Lagos",
-    "Abuja",
-    "Kano",
-    "Port Harcourt",
-    "Ibadan",
-    "Enugu",
-  ];
+  const fetchCountriesData = async () => {
+    setLoading((prev) => ({ ...prev, countries: true }));
+    try {
+      const response = await fetchCountries();
+      setCountries(response.data);
+    } catch (error) {
+      message.error("Failed to load countries: " + error.message);
+      console.error("Error fetching countries:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, countries: false }));
+    }
+  };
+
+  const fetchZonesData = async (countryCode) => {
+    setLoading((prev) => ({ ...prev, zones: true }));
+    try {
+      const response = countryCode
+        ? await fetchZonesByCountry(countryCode)
+        : await fetchAllZones();
+      setZones(response.data);
+    } catch (error) {
+      message.error("Failed to load zones: " + error.message);
+      console.error("Error fetching zones:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, zones: false }));
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await form.validateFields();
+      const values = form.getFieldsValue();
+
+      switch (step) {
+        case 1:
+          const selectedCountry = countries.find(
+            (country) => country.name === values.country
+          );
+          if (selectedCountry) {
+            await fetchZonesData(selectedCountry.code);
+            setVendorData(prev => ({ ...prev, country: values.country }));
+          }
+          setStep(2);
+          break;
+
+        case 2:
+          setIdentifier(values.email);
+          await requestOtp({ email: values.email });
+          message.success("Verification code sent!");
+          setStep(3);
+          break;
+
+        case 3:
+          await verifyOtp({ identifier, otp: values.verificationCode });
+          message.success("Verified successfully!");
+          setStep(4);
+          break;
+
+        case 4:
+          // Store personal information
+          setVendorData(prev => ({
+            ...prev,
+            name: values.name,
+            lastName: values.lastName,
+            phone: values.phone,
+            password: values.password
+          }));
+          setStep(5);
+          break;
+
+        case 5:
+          // Ensure agreement is checked
+          if (!values.agree) {
+            return message.error("You must agree to the terms to proceed!");
+          }
+
+          // Update vendor data with shop information
+          setVendorData(prev => ({
+            ...prev,
+            shopName: values.shopName,
+            shoppingZone: values.shoppingZone,
+            accountType: values.accountType
+          }));
+
+          // Combine all data for final submission
+          const signupData = {
+            email: identifier,
+            password: vendorData.password,
+            name: vendorData.name,
+            lastName: vendorData.lastName,
+            phone: vendorData.phone,
+            provider: "email",
+            role: "vendor",
+            country: vendorData.country,
+            shoppingZone: values.shoppingZone,
+            shopName: values.shopName,
+            accountType: values.accountType
+          };
+
+          console.log("Sending signup data:", signupData);
+          
+          try {
+            await signup(signupData);
+            message.success("Account created successfully!");
+            navigate("/VendorLogin");
+          } catch (error) {
+            console.error("Signup error:", error);
+            message.error(
+              error.response?.data?.message || 
+              error.message || 
+              "Failed to create account. Please try again."
+            );
+          }
+          break;
+      }
+    } catch (error) {
+      message.error(error.message || "An error occurred");
+    }
+  };
+  
   const stepDetails = [
     {
       heading: "Sell on Jumia",
@@ -40,8 +178,7 @@ const SignUp = () => {
     },
     {
       heading: "Setup your account",
-      description:
-        "Please provide your email address to create your seller account",
+      description: "Please provide the verification code sent to your email",
     },
     {
       heading: "Personal Information",
@@ -58,7 +195,7 @@ const SignUp = () => {
       <img
         src="https://vendorcenter.jumia.com/assets/images/signup-background.svg"
         alt="signin image"
-         className=" w-1/3"
+        className="w-1/3"
       />
       <div className="w-full max-w-lg ml-10">
         <div className="text-center mb-8">
@@ -66,7 +203,7 @@ const SignUp = () => {
           <p className="text-gray-600">{stepDetails[step - 1].description}</p>
         </div>
 
-        <div className=" bg-white shadow-md rounded-lg p-6 mr-10 ">
+        <div className="bg-white shadow-md rounded-lg p-6 mr-10">
           <Form form={form} layout="vertical" className="space-y-4">
             {step === 1 && (
               <Form.Item
@@ -76,10 +213,23 @@ const SignUp = () => {
                   { required: true, message: "Please select your country!" },
                 ]}
               >
-                <Select placeholder="Select your country">
-                  <Option value="Nigeria">Nigeria</Option>
-                  <Option value="Kenya">Kenya</Option>
-                  <Option value="South Africa">South Africa</Option>
+                <Select
+                  placeholder="Select your country"
+                  loading={loading.countries}
+                  showSearch
+                  optionFilterProp="children"
+                  onChange={handleCountryChange}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {countries.map((country) => (
+                    <Option key={country.code} value={country.name}>
+                      {country.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             )}
@@ -115,6 +265,30 @@ const SignUp = () => {
             {step === 4 && (
               <>
                 <Form.Item
+                  label="First Name"
+                  name="name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter your First name!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter your first name" />
+                </Form.Item>
+                <Form.Item
+                  label="Last Name"
+                  name="lastName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter your last name!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter your last name" />
+                </Form.Item>
+                <Form.Item
                   label="Phone Number"
                   name="phone"
                   rules={[
@@ -124,7 +298,10 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter your phone number" />
+                  <Input 
+                    placeholder="Enter your phone number" 
+                    autoComplete="off" 
+                  />
                 </Form.Item>
                 <Form.Item
                   label="Password"
@@ -137,7 +314,10 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input.Password placeholder="Enter your password" />
+                  <Input.Password 
+                    placeholder="Enter your password" 
+                    autoComplete="new-password"
+                  />
                 </Form.Item>
               </>
             )}
@@ -183,10 +363,20 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Select placeholder="Select the area where your products will be stored">
-                    {shoppingZones.map((zone) => (
-                      <Option key={zone} value={zone}>
-                        {zone}
+                  <Select
+                    placeholder="Select your shopping zone"
+                    loading={loading.zones}
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {zones.map((zone) => (
+                      <Option key={zone.id} value={zone.name}>
+                        {zone.name}
                       </Option>
                     ))}
                   </Select>
@@ -219,7 +409,7 @@ const SignUp = () => {
               <Button
                 type="primary"
                 htmlType="button"
-                onClick={handleNext}
+                onClick={handleSubmit}
                 className="bg-[#FFA500] w-full"
               >
                 {step < 5 ? "Next" : "Submit"}
@@ -227,13 +417,15 @@ const SignUp = () => {
             </Form.Item>
           </Form>
         </div>
-        <p className="p-2">Already have an account?   <span
-          className="text-[#FFA500]"
-          onClick={() => navigate("/VendorLogin")}
-        >
-          Sign in
-        </span> </p>
-      
+        <p className="p-2">
+          Already have an account?{" "}
+          <span
+            className="text-[#FFA500]"
+            onClick={() => navigate("/VendorLogin")}
+          >
+            Sign in
+          </span>
+        </p>
       </div>
     </div>
   );

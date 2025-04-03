@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Radio, Select, Checkbox, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { requestOtp, signup, verifyOtp } from "../../api";
 
 const { Option } = Select;
 
@@ -8,32 +9,74 @@ const SignUpCustomer = () => {
   const [step, setStep] = useState(1);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  
+  const [identifier, setIdentifier] = useState("");
 
-  const handleNext = () => {
-    form.validateFields().then(() => {
-      if (step < 3) {
-        setStep(step + 1);
-      } else {
-        message.success("Sign-up complete!");
-        navigate("/login");
+  const handleNext = async () => {
+    try {
+      await form.validateFields();
+      const values = form.getFieldsValue();
+  
+      switch (step) {
+        case 1:
+          if (!values.email && !values.phone) {
+            return message.error("Please enter an email or phone number.");
+          }
+  
+          setIdentifier(values.email || values.phone);
+  
+          await requestOtp({
+            email: values.email || undefined,
+            phoneNumber: values.phone || undefined,
+          });
+  
+          message.success("Verification code sent!");
+          setStep(2);
+          break;
+  
+        case 2:
+          await verifyOtp({
+            identifier,
+            otp: values.verificationCode,
+          });
+  
+          message.success("Verified successfully!");
+          setStep(3);
+          break;
+  
+        case 3:
+          await signup({
+            email: identifier,
+            phone: values.phone || "",
+            password: values.password,
+            name: values.name,
+            lastName: values.lastName,
+            provider: "email", 
+            role:"user"
+          });
+  
+          message.success("Sign-up complete!");
+          setIdentifier("");
+          navigate("/login");
+          break;
       }
-    });
+    } catch (error) {
+      message.error(error.message || "An error occurred");
+    }
   };
+  
 
   const stepDetails = [
     {
       heading: "Create your account",
-      description:
-        "Let's get started by creating your account.To keep your account safe, we need a strong password",
+      description: "Let's get started by creating your account. To keep your account safe, we need a strong password",
     },
     {
       heading: "Verify your email address",
-      description:
-        "We have sent a verification code to {pelumijoy08@gmail.com}",
+      description: `We have sent a verification code to ${identifier}`,
     },
-
     {
-      heading: " Personal details",
+      heading: "Personal details",
       description: "We just need you to fill in some details.",
     },
   ];
@@ -43,7 +86,7 @@ const SignUpCustomer = () => {
       <img
         src="https://vendorcenter.jumia.com/assets/images/signup-background.svg"
         alt="signin image"
-        className=" w-1/3"
+        className="w-1/3"
       />
       <div className="w-full max-w-lg ml-10">
         <div className="text-center mb-8">
@@ -51,7 +94,7 @@ const SignUpCustomer = () => {
           <p className="text-gray-600">{stepDetails[step - 1].description}</p>
         </div>
 
-        <div className=" bg-white shadow-md rounded-lg p-6 mr-10 ">
+        <div className="bg-white shadow-md rounded-lg p-6 mr-10">
           <Form form={form} layout="vertical" className="space-y-4">
             {step === 1 && (
               <Form.Item
@@ -107,6 +150,16 @@ const SignUpCustomer = () => {
                 >
                   <Input placeholder="Enter your last name" />
                 </Form.Item>
+                {/* <Form.Item
+                label="Email Address"
+                name="email"
+                rules={[
+                  { required: true, message: "Please enter your email!" },
+                  { type: "email", message: "Please enter a valid email!" },
+                ]}
+              >
+                <Input placeholder="Enter your email" />
+              </Form.Item> */}
                 <Form.Item
                   label="Phone Number"
                   name="phone"
@@ -117,7 +170,10 @@ const SignUpCustomer = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter your phone number" />
+                  <Input 
+                    placeholder="Enter your phone number" 
+                    autoComplete="off"
+                  />
                 </Form.Item>
                 <Form.Item
                   label="Password"
@@ -130,8 +186,12 @@ const SignUpCustomer = () => {
                     },
                   ]}
                 >
-                  <Input.Password placeholder="Enter your password" />
+                  <Input.Password 
+                    placeholder="Enter your password" 
+                    autoComplete="new-password"
+                  />
                 </Form.Item>
+
 
                 <Form.Item
                   name="agree"
@@ -170,12 +230,11 @@ const SignUpCustomer = () => {
         <p className="p-2">
           Already have an account?{" "}
           <span className="text-[#FFA500]" onClick={() => navigate("/login")}>
-          Login 
+            Login
           </span>{" "}
         </p>
       </div>
     </div>
   );
 };
-
 export default SignUpCustomer;

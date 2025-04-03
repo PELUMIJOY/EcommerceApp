@@ -54,7 +54,7 @@ export default function Navbar() {
       onClick={handleMenuClick}
       items={[
         {
-          key: "signin",
+          key: "login",
           label: (
             <Button className="w-full bg-orange-500 text-white font-bold">
               Sign In

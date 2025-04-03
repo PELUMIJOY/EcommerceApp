@@ -15,7 +15,7 @@ import {
   TrophyOutlined,
   BarsOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; // For Vite, use React Router
+import { useNavigate } from "react-router-dom"; 
 
 export default function Elementthree() {
   const navigate = useNavigate();
