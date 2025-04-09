@@ -6,7 +6,7 @@ import VendorLogin from "../modules/Auth/VendorLogin";
 import Cart from "../modules/Components/cartItems/Cart";
 import Category from "../modules/Components/category/Category";
 import Checkout from "../modules/Components/checkout/Checkout";
-import Header from "../modules/components/header/Header";
+import Header from "../modules/Components/header/Header";
 import OrdersPage from "../modules/Components/OrdersPage";
 import ProductDetail from "../modules/Components/productDetails/ProductDetail";
 import SellOnJumia from "../modules/Components/SellOnJumia/SellOnJumia";
