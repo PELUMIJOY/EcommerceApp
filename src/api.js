@@ -1,178 +1,22 @@
 import { notification } from "antd";
 import axios from "axios";
 
+export const BASE_URL = "https://jumia-api-1.onrender.com";
 
-export const BASE_URL = "http://localhost:8000";
-
-export const api= axios.create({
-    baseURL:  BASE_URL,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  
-//   export const fetchCategories = async () => {
-//     try {
-//       const response = await api.get(`/api/categories`);
-//       return response.data; 
-//       notification.success(response.data.message)
-//     } catch (error) {
-//       notification.error(response.data.error)
-//       console.error("Error fetching categories:", error);
-//       throw error;
-//     }
-//   };
-
-
-//   export const fetchItems = async () => {
-//     try {
-//       const response = await api.get(`/api/items`);
-//       return response.data; 
-//     } catch (error) {
-//       console.error("Error fetching items:", error);
-//       throw error;
-//     }
-//   };
-//   export const createCategory = async (data) => {
-//     try {
-//       const response = await api.post(`/api/categories`, data); 
-//       return response.data;
-//     } catch (error) {
-//       console.error("Error creating category:", error.response?.data || error);
-//       throw error;
-//     }
-//   };
-
-//   export const createItems = async (data) => {
-//     try {
-//       const response = await api.post(`/api/items`, data);
-//       return response.data; 
-//     c
-//     } catch (error) {
-//       console.error("Error create items:", error);
-//       throw error;
-//     }
-//   };
-//   export const updateCategory = async () => {
-//     try {
-//       const response = await api.put(`/api/categories/${id}`);
-//       return response.data; 
-//     } catch (error) {
-//       console.error("Error update category:", error);
-//       throw error;
-//     }
-//   };
-//   export const updateItems = async (id, updatedItem) => {
-//     try {
-//       const response = await api.put(`/api/items/${id}`, updatedItem);
-//       return response.data; 
-//     } catch (error) {
-//       console.error("Error update items:", error);
-//       throw error;
-//     }
-//   };
-//   // export const updateItems = async (id, updatedItem) => {
-//   //   try {
-//   //     const response = await api.put(`/api/items/${id}`, {  // Ensure ID is in URL
-//   //       method: "PUT",
-//   //       headers: {
-//   //         "Content-Type": "application/json",
-//   //       },
-//   //       body: JSON.stringify(updatedItem),
-//   //     });
-  
-//   //     if (!response.ok) {
-//   //       throw new Error("Failed to update item");
-//   //     }
-  
-//   //     return await response.json();
-//   //   } catch (error) {
-//   //     console.error("Error updating item:", error);
-//   //     return { success: false, error };
-//   //   }
-//   // };
-  
-
-//   export const deleteCategory = async () => {
-//     try {
-//       const response = await api.delete(`/api/categories/${id}`);
-//       return response.data; 
-//     } catch (error) {
-//       console.error("Error update category:", error);
-//       throw error;
-//     }
-//   };
-//   export const deleteItems = async () => {
-//     try {
-//       const response = await api.delete(`/api/items/${id}`);
-//       return response.data; 
-//     } catch (error) {
-//       console.error("Error update items:", error);
-//       throw error;
-//     }
-//   };
-
-//   export const signup = async (userData) => {
-//     try {
-//       const response = await api.post(`/api/auth/signup`, userData, { withCredentials: true });
-//       return response.data;
-//     } catch (error) {
-//       throw error.response?.data || error.message;
-//     }
-//   };
-  
-//   export const login = async (userData) => {
-//     try {
-//       const response = await api.post(`/api/auth/login`, userData, { withCredentials: true });
-//       return response.data;
-//     } catch (error) {
-//       throw error.response?.data || error.message;
-//     }
-//   };
-  
-//   export const logout = async () => {
-//     try {
-//       const response = await api.post(`/api/auth/logout`, {}, { withCredentials: true });
-//       return response.data;
-//     } catch (error) {
-//       throw error.response?.data || error.message;
-//     }
-//   };
-  
-//   export const requestOtp = async (identifier) => {
-//     try {
-//       const response = await api.post(`/api/auth/otp/request`, identifier);
-//       return response.data;
-//     } catch (error) {
-//       throw error.response?.data || error.message;
-//     }
-//   };
-  
-//   export const verifyOtp = async (otpData) => {
-//     try {
-//       const response = await api.post(`/api/otp/verify`, otpData);
-//       return response.data;
-//     } catch (error) {
-//       throw error.response?.data || error.message;
-//     }
-//   };
-  
-
-// Create axios instance with default configuration
-// export const api = axios.create({
-//   baseURL: BASE_URL,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: true, // Enable credentials for all requests
-// });
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 // Generic error handler
 const handleApiError = (error, customMessage) => {
-  const errorMessage = error.response?.data?.message 
-    || error.response?.data?.error 
-    || error.message 
-    || "An unexpected error occurred";
+  const errorMessage =
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    error.message ||
+    "An unexpected error occurred";
 
   notification.error({
     message: customMessage || "Error",
@@ -247,7 +91,10 @@ export const fetchCountries = async () => {
     const response = await api.get("/api/locations/countries");
     return response;
   } catch (error) {
-    throw new Error("Error fetching countries: " + (error.response?.data?.message || error.message));
+    throw new Error(
+      "Error fetching countries: " +
+        (error.response?.data?.message || error.message)
+    );
   }
 };
 
@@ -256,7 +103,10 @@ export const fetchAllZones = async () => {
     const response = await api.get("/api/locations/zones");
     return response;
   } catch (error) {
-    throw new Error("Error fetching zones: " + (error.response?.data?.message || error.message));
+    throw new Error(
+      "Error fetching zones: " +
+        (error.response?.data?.message || error.message)
+    );
   }
 };
 
@@ -265,10 +115,12 @@ export const fetchZonesByCountry = async (countryCode) => {
     const response = await api.get(`/api/locations/zones/${countryCode}`);
     return response;
   } catch (error) {
-    throw new Error("Error fetching zones: " + (error.response?.data?.message || error.message));
+    throw new Error(
+      "Error fetching zones: " +
+        (error.response?.data?.message || error.message)
+    );
   }
 };
-
 
 export const createItems = async (data) => {
   try {
@@ -376,15 +228,75 @@ export const verifyOtp = async (otpData) => {
   }
 };
 
-export const addCart = async (userData) => {
+export const addCart = async (userId, productId, quantity) => {
   try {
-    const response = await api.post("/api/cart", userData);
-    notification.success({
-      message: "Success",
-      description: "Account created successfully",
+    const response = await api.post("api/cart/add", {
+      userId,
+      productId,
+      quantity,
     });
     return response.data;
   } catch (error) {
-    handleApiError(error, "Signup failed");
+    console.error("Error adding to cart:", error);
+    throw error;
+  }
+};
+
+// Get cart contents
+export const getCart = async (userId) => {
+  try {
+    const response = await api.get(`api/cart/${userId}`);
+    return response.data.cart;
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    throw error;
+  }
+};
+
+// Remove item from cart
+export const removeItem = async (userId, productId) => {
+  try {
+    const response = await api.delete(`api/cart/${userId}/item/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+    throw error;
+  }
+};
+
+// Update item quantity
+export const updateCartQuantity = async (userId, productId, quantity) => {
+  try {
+    const response = await api.put(`api/cart/${userId}/item/${productId}`, {
+      quantity,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating item quantity:", error);
+    throw error;
+  }
+};
+
+// Clear cart
+export const clearCart = async (userId) => {
+  try {
+    const response = await api.delete(`api/cart/${userId}/clear`);
+    return response.data;
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    throw error;
+  }
+};
+
+// Checkout
+export const checkout = async (userId, shippingDetails) => {
+  try {
+    const response = await api.post(`api/cart/${userId}/checkout`, {
+      shippingDetails,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    throw error;
   }
 };

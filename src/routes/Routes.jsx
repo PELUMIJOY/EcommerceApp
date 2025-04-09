@@ -5,7 +5,9 @@ import SignUpCustomer from "../modules/Auth/SignUpCustomer";
 import VendorLogin from "../modules/Auth/VendorLogin";
 import Cart from "../modules/Components/cartItems/Cart";
 import Category from "../modules/components/category/Category";
+import Checkout from "../modules/Components/checkout/Checkout";
 import Header from "../modules/components/header/Header";
+import OrdersPage from "../modules/Components/OrdersPage";
 import ProductDetail from "../modules/Components/productDetails/ProductDetail";
 import SellOnJumia from "../modules/Components/SellOnJumia/SellOnJumia";
 import AddCategory from "../modules/Components/VendorCenter/AddCategory";
@@ -71,6 +73,9 @@ const routes = [
       { path: "sell", element: <SellOnJumia /> },
       { path: "product/:id", element: <ProductDetail /> },
       { path: "cart", element: <Cart /> },
+      { path: "checkout", element: <Checkout /> },
+      { path: "orders", element: <OrdersPage /> },
+      
     ],
     Cart,
   },

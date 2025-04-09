@@ -79,15 +79,15 @@ export default function Navbar() {
             </div>
           ),
         },
-        {
-          key: "saved",
-          label: (
-            <div className="flex items-center gap-2">
-              <HeartOutlined />
-              <span>Saved Items</span>
-            </div>
-          ),
-        },
+        // {
+        //   key: "saved",
+        //   label: (
+        //     <div className="flex items-center gap-2">
+        //       <HeartOutlined />
+        //       <span>Saved Items</span>
+        //     </div>
+        //   ),
+        // },
       ]}
     />
   );

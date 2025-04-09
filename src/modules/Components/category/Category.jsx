@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-// import { fetchProductsbyCategory } from "@/lib/fetchData";
 import { Card } from "antd";
 import CategoryDetails from "./Categorydetails";
 import Indicator from "../../../common/Indicator";
