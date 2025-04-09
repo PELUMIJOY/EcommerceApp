@@ -75,7 +75,6 @@ const routes = [
       { path: "cart", element: <Cart /> },
       { path: "checkout", element: <Checkout /> },
       { path: "orders", element: <OrdersPage /> },
-      
     ],
     Cart,
   },
