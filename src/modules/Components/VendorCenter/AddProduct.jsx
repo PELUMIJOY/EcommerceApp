@@ -22,7 +22,7 @@ const AddProductSteps = () => {
 
     const formData = new FormData();
     formData.append("file", uploadedFile.originFileObj);
-    formData.append("upload_preset", "jumia-ecommerce");
+    formData.append("upload_preset", "JoyceStore-ecommerce");
 
     try {
       const response = await fetch(

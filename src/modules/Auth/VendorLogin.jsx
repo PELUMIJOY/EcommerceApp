@@ -63,9 +63,9 @@ const VendorLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex bg-white shadow-md rounded-lg overflow-hidden w-3/4 max-w-4xl">
         <div className="w-1/2 flex flex-col items-center justify-center p-10">
-          <img src={jumiaLogo} alt="Jumia Logo" className="h-12 mb-8" />
+          <img src={jumiaLogo} alt="JoyceStore Logo" className="h-12 mb-8" />
           <h1 className="text-2xl font-bold text-orange-600 mb-4">
-            JUMIA VendorCenter
+          JoyceStore VendorCenter
           </h1>
 
           {showEmailForm ? (
@@ -181,13 +181,13 @@ const VendorLogin = () => {
             </div>
           )}
 
-          <Divider className="my-6">New to JUMIA?</Divider>
+          <Divider className="my-6">New to JoyceStore?</Divider>
           <Button
             type="link"
             className="text-orange-600 hover:text-orange-700"
             onClick={() => navigate("/signup")}
           >
-            Sell on Jumia
+            Sell on JoyceStore
           </Button>
         </div>
 

@@ -168,7 +168,7 @@ const SignUp = () => {
   
   const stepDetails = [
     {
-      heading: "Sell on Jumia",
+      heading: "Sell on Joyce Store",
       description: "Choose the country of your shop",
     },
     {
@@ -397,8 +397,8 @@ const SignUp = () => {
                   ]}
                 >
                   <Checkbox>
-                    I hereby confirm that I have read and I agree to the Jumia
-                    seller contract, Jumia codes, policies and guidelines and
+                    I hereby confirm that I have read and I agree to the JoyceStore
+                    seller contract, JoyceStore codes, policies and guidelines and
                     Privacy Notice and Cookie Notice referenced therein.
                   </Checkbox>
                 </Form.Item>

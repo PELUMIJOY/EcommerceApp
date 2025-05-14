@@ -1,24 +1,7 @@
-// import React from "react";
-
-// export default function Rightside() {
-//   return (
-//     <div className="hidden lg:inline lg:w-[20%] flex flex-col p-2 pt-0 ">
-//       <img
-//         src="https://ng.jumia.is/cms/0-1-cpr/2022/june-14/free-delivery_218x184.png"
-//         className=" w-full  mb-1  h-[50%] shadow-lg rounded-sm"
-//         alt="image"
-//       />
-//       <img
-//         src="https://ng.jumia.is/cms/0-1-initiatives/jforce/2023/JForce.png"
-//         className=" h-[50%] w-full shadow-lg  rounded-sm"
-//         alt="image"
-//       />
-//     </div>
-//   );
-// }
-
 import React from "react";
 import { Card } from "antd";
+import sideImg from "../../../assets/images/sideImg.png"
+import sideImg2 from "../../../assets/images/sideImg2.png"
 
 export default function Rightside() {
   return (
@@ -28,7 +11,7 @@ export default function Rightside() {
         hoverable
         cover={
           <img
-            src="https://ng.jumia.is/cms/0-1-cpr/2022/june-14/free-delivery_218x184.png"
+            src={sideImg}
             alt="Free Delivery"
             className="rounded-sm"
           />
@@ -41,7 +24,7 @@ export default function Rightside() {
         hoverable
         cover={
           <img
-            src="https://ng.jumia.is/cms/0-1-initiatives/jforce/2023/JForce.png"
+            src={sideImg2}
             alt="JForce Initiative"
             className="rounded-sm"
           />

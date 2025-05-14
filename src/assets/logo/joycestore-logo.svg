@@ -1,0 +1,14 @@
+<svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background color for visibility - can be removed -->
+  <rect width="500" height="150" fill="white"/>
+  
+  <!-- Text part of the logo -->
+  <text x="30" y="85" font-family="Arial, sans-serif" font-weight="bold" font-size="48" fill="#F97316">JOYCE</text>
+  <text x="220" y="85" font-family="Arial, sans-serif" font-weight="bold" font-size="48" fill="#000000">STORE</text>
+  
+  <!-- Smile/arc element similar to Jumia's logo -->
+  <path d="M60 100 Q 250 160, 440 100" stroke="#F97316" stroke-width="8" fill="none"/>
+  
+  <!-- Optional dot above the 'i' with brand color -->
+  <circle cx="342" y="52" r="6" fill="#F97316"/>
+</svg>

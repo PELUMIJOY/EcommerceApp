@@ -1,6 +1,6 @@
 "use client";
 import Category from "../category/Category";
-import SliderMainPage from "../mainPage/SliderMainPage";
+// import SliderMainPage from "../mainPage/SliderMainPage";
 import Gaming from "../recommended/gaming";
 import Recommended from "../recommended/recommended";
 import Recommendedforu from "../recommended/recommendedforu";
@@ -23,7 +23,7 @@ export default function Header() {
       </div>
       {/* <Category/> */}
       <Recommended />
-      <SliderMainPage />
+      {/* <SliderMainPage /> */}
 
       <Recommendedforu />
 

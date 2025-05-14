@@ -6,7 +6,7 @@ import {
   GoogleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { requestOtp, verifyOtp } from "../../api";
+import { BASE_URL, requestOtp, verifyOtp } from "../../api";
 
 const CustomerLogin = () => {
   const [form] = Form.useForm();
@@ -16,14 +16,14 @@ const CustomerLogin = () => {
 
   // Handle Google OAuth login - fixed to use full URL path
   const handleGoogleLogin = () => {
-    const baseUrl = "http://localhost:8000";
-    window.location.href = `${baseUrl}/auth/google?role=user`;
+    // const baseUrl = "http://localhost:8000";
+    window.location.href = `${BASE_URL}/auth/google?role=user`;
   };
 
   // Handle Facebook OAuth login
   const handleFacebookLogin = () => {
-    const baseUrl = "http://localhost:8000";
-    window.location.href = `${baseUrl}/auth/facebook?role=user`;
+    // const baseUrl = "http://localhost:8000";
+    window.location.href = `${BASE_URL}/auth/facebook?role=user`;
   };
 
   const handleContinue = async () => {
@@ -77,7 +77,7 @@ const CustomerLogin = () => {
             <span className="text-white text-2xl font-bold">★</span>
           </div>
         </div>
-        <h1 className="text-2xl font-bold mb-2">Welcome to Jumia</h1>
+        <h1 className="text-2xl font-bold mb-2">Welcome to Joyce Store</h1>
         <Form form={form} layout="vertical" className="space-y-4">
           <Form.Item
             label="Email"
@@ -100,7 +100,7 @@ const CustomerLogin = () => {
           </Button>
 
           <p className="text-gray-500 text-sm mb-4">
-            By continuing you agree to Jumia's{" "}
+            By continuing you agree to Joyce Store's{" "}
             <a href="#" className="text-orange-500">
               Terms and Conditions
             </a>
@@ -132,7 +132,7 @@ const CustomerLogin = () => {
           For further support, visit the{" "}
           <a href="#" className="text-orange-500">
             Help Center
-          </a>{" "}
+          </a>
           or contact our customer service team.
         </p>
       </div>

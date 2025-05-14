@@ -16,6 +16,7 @@ import Elementthree from "./elementthree";
 import ShoppingCart from "./shoppingcart";
 import TableSearch from "../../common/TableSearch";
 import jumiaLogo from "../../assets/logo/jumiaLogo.png";
+import joyceStoreLogo from "../../assets/logo/joycestore-logo.svg";
 import { fetchCategories, fetchItems } from "../../api";
 
 export default function Navbar() {
@@ -170,28 +171,28 @@ export default function Navbar() {
   return (
     <>
       {/* Top Line for Sell and Jumia Pay */}
-      <div className="bg-gray-100 py-2">
+      <div className="bg-orange-500 py-2">
         <div className="md:max-w-7xl mx-auto flex justify-between items-center px-4 text-sm">
           <button
-            className="text-orange-500 font-semibold hover:underline"
+            className="text-white font-bold hover:underline "
             onClick={() => navigate("/sell")}
           >
-            Sell on Jumia
+            Sell on JoyceStore
           </button>
-          <span className="text-gray-700 font-medium">
-            JUMIA <span className="text-orange-500">Pay</span>
-          </span>
+          {/* <span className="text-gray-700 font-medium">
+            JOYCESTORE <span className="text-orange-500">Pay</span>
+          </span> */}
         </div>
       </div>
       {/* Top Banner */}
-      <div className="bg-orange-500 mb-3">
+      {/* <div className="bg-orange-500 mb-3">
         <div className="mx-auto w-full align-middle md:max-w-7xl">
           <img
             src="https://ng.jumia.is/cms/0-1-cpr/2023/new-top-strip/free-delivery-top-strip_1.gif"
             alt="Free Delivery Banner"
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Navbar */}
       <div className="bg-white">
@@ -199,12 +200,14 @@ export default function Navbar() {
           {/* Logo and Menu */}
           <span className="flex space-x-2 items-center">
             <Elementthree />
-            <img
+            {/* <img
               src={jumiaLogo}
               className="h-[40px] cursor-pointer"
-              alt="Jumia Logo"
+              alt="Joyce Logo"
               onClick={() => navigate("/")}
-            />
+            /> */}
+            <img src={joyceStoreLogo} alt="JOYCESTORE Logo" className="h-[50px] cursor-pointer" onClick={() => navigate("/")}/>
+
           </span>
 
           <div className="w-[500px] flex flex-2 gap-2 h-[40px]">

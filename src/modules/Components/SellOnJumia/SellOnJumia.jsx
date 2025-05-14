@@ -12,7 +12,7 @@ const SellOnJumia = () => {
       >
         <Row justify="space-between" align="middle">
           <Col xs={24} sm={12}>
-            <h1 style={{ color: "#fff", margin: 0 }}>Sell on Jumia</h1>
+            <h1 style={{ color: "#fff", margin: 0 }}>Sell on JoyceStore</h1>
           </Col>
           <Col xs={24} sm={12} style={{ textAlign: "right" }}>
             <Button
@@ -29,7 +29,7 @@ const SellOnJumia = () => {
 
       {/* Why Sell on Jumia Section */}
       <div style={{ padding: "40px", textAlign: "center" }}>
-        <h3 style={{ marginBottom: "20px" }}>Why sell on Jumia?</h3>
+        <h3 style={{ marginBottom: "20px" }}>Why sell on JoyceStore?</h3>
         <Row gutter={[16, 16]} justify="center">
           {[
             "Connect with more buyers",
@@ -76,7 +76,7 @@ const SellOnJumia = () => {
           <Col xs={24} md={12}>
             <Card>
               <p style={{ marginBottom: "10px" }}>
-                Selling on Jumia has been very rewarding with higher turnover
+                Selling on JoyceStore has been very rewarding with higher turnover
                 and good profit.
               </p>
               <p style={{ fontStyle: "italic", textAlign: "right", margin: 0 }}>

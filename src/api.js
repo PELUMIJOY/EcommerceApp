@@ -10,7 +10,7 @@ export const api = axios.create({
   },
 });
 
-// Generic error handler
+
 const handleApiError = (error, customMessage) => {
   const errorMessage =
     error.response?.data?.message ||
