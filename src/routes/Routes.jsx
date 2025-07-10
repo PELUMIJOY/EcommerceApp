@@ -40,7 +40,7 @@ const routes = [
     children: [
       {
         index: true,
-        element: <AddProduct />,
+        element: <AddCategory />,
       },
       {
         path: "addProduct",

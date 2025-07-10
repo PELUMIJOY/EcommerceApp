@@ -318,10 +318,6 @@ export default function ProductDetail() {
               <p className="font-semibold mt-4"> Promotions</p>
               <p>Call 07006000000 To Place Your Order</p>
               <p>
-                Need extra money? Loan up to N500,000 on the JoyceStoreaPay
-                Android app.
-              </p>
-              <p>
                 Enjoy cheaper shipping fees when you select a PickUp Station at
                 checkout.
               </p>

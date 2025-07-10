@@ -15,7 +15,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Elementthree from "./elementthree";
 import ShoppingCart from "./shoppingcart";
 import TableSearch from "../../common/TableSearch";
-import jumiaLogo from "../../assets/logo/jumiaLogo.png";
 import joyceStoreLogo from "../../assets/logo/joycestore-logo.svg";
 import { fetchCategories, fetchItems } from "../../api";
 
@@ -177,7 +176,7 @@ export default function Navbar() {
             className="text-white font-bold hover:underline "
             onClick={() => navigate("/sell")}
           >
-            Sell on JoyceStore
+            Sell on Didara Nigeria
           </button>
           {/* <span className="text-gray-700 font-medium">
             JOYCESTORE <span className="text-orange-500">Pay</span>
@@ -198,7 +197,7 @@ export default function Navbar() {
       <div className="bg-white">
         <div className="md:max-w-7xl mx-auto flex py-3 justify-between items-center">
           {/* Logo and Menu */}
-          <span className="flex space-x-2 items-center">
+          {/* <span className="flex space-x-2 items-center">
             <Elementthree />
             {/* <img
               src={jumiaLogo}
@@ -206,10 +205,23 @@ export default function Navbar() {
               alt="Joyce Logo"
               onClick={() => navigate("/")}
             /> */}
-            <img src={joyceStoreLogo} alt="JOYCESTORE Logo" className="h-[50px] cursor-pointer" onClick={() => navigate("/")}/>
+            {/* <img src={joyceStoreLogo} alt="JOYCESTORE Logo" className="h-[50px] cursor-pointer" onClick={() => navigate("/")}/> */}
+            {/* <h2 className="">Didara Nigeria</h2>
+  <small>Made in Nigeria flagship mall</small>
+          </span> */} 
 
-          </span>
-
+<span className="flex flex-col space-y-1 justify-start ">
+  <Elementthree />
+  <div>
+    <h2 className="font-bold leading-tight">
+      <span className="text-orange-500 ml-10 font-extrabold">Didara</span>{' '}
+      <span className="text-black font-extrabold">Nigeria</span>
+    </h2>
+    <small className="block text-sm text-gray-600 align-middle">
+      Made in Nigeria flagship mall
+    </small>
+  </div>
+</span>
           <div className="w-[500px] flex flex-2 gap-2 h-[40px]">
             <TableSearch
               placeholder="Search Products and categories"

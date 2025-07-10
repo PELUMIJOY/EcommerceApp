@@ -1,7 +1,12 @@
 import { notification } from "antd";
 import axios from "axios";
 
-export const BASE_URL = "https://jumia-api-1.onrender.com";
+// export const BASE_URL = "https://jumia-api-1.onrender.com";
+const isLocal = window?.location?.hostname === "localhost";
+
+export const BASE_URL = isLocal
+  ? "http://localhost:8000"
+  : "https://jumia-api-1.onrender.com";
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -9,7 +14,6 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 const handleApiError = (error, customMessage) => {
   const errorMessage =

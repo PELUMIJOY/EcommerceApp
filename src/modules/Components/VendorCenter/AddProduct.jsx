@@ -22,11 +22,11 @@ const AddProductSteps = () => {
 
     const formData = new FormData();
     formData.append("file", uploadedFile.originFileObj);
-    formData.append("upload_preset", "JoyceStore-ecommerce");
+    formData.append("upload_preset", "didara-ecommerce");
 
     try {
       const response = await fetch(
-        "https://api.cloudinary.com/v1_1/dscmv97cg/image/upload",
+        "https://api.cloudinary.com/v1_1/didaracload/image/upload",
         {
           method: "POST",
           body: formData,
@@ -93,7 +93,7 @@ const AddProductSteps = () => {
             listType="picture-card"
             beforeUpload={() => false}
             onChange={handleImageChange}
-            maxCount={1}
+            maxCount={20}
           >
             <div>
               <PlusOutlined />

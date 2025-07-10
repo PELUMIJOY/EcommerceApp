@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button, Input, Modal, Form, message } from "antd";
 import {
   FacebookOutlined,
-  AppleOutlined,
   GoogleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL, requestOtp, verifyOtp } from "../../api";
+import { requestOtp, verifyOtp } from "../../api";
+import { authClient } from "../../utils/auth-client";
 
 const CustomerLogin = () => {
   const [form] = Form.useForm();
@@ -15,15 +15,19 @@ const CustomerLogin = () => {
   const [identifier, setIdentifier] = useState("");
 
   // Handle Google OAuth login - fixed to use full URL path
-  const handleGoogleLogin = () => {
-    // const baseUrl = "http://localhost:8000";
-    window.location.href = `${BASE_URL}/auth/google?role=user`;
+  const handleGoogleLogin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/cart`,
+    });
   };
 
   // Handle Facebook OAuth login
-  const handleFacebookLogin = () => {
-    // const baseUrl = "http://localhost:8000";
-    window.location.href = `${BASE_URL}/auth/facebook?role=user`;
+  const handleFacebookLogin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "facebook",
+      callbackURL: `${window.location.origin}/cart`,
+    });
   };
 
   const handleContinue = async () => {
@@ -65,9 +69,6 @@ const CustomerLogin = () => {
     }
   };
 
-  // const handleSocialLogin = (provider) => {
-  //   window.location.href = `/auth/${provider.toLowerCase()}`;
-  // };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-white">
@@ -77,7 +78,7 @@ const CustomerLogin = () => {
             <span className="text-white text-2xl font-bold">★</span>
           </div>
         </div>
-        <h1 className="text-2xl font-bold mb-2">Welcome to Joyce Store</h1>
+        <h1 className="text-2xl font-bold mb-2">Welcome to Didara Nigeria</h1>
         <Form form={form} layout="vertical" className="space-y-4">
           <Form.Item
             label="Email"
@@ -100,7 +101,7 @@ const CustomerLogin = () => {
           </Button>
 
           <p className="text-gray-500 text-sm mb-4">
-            By continuing you agree to Joyce Store's{" "}
+            By continuing you agree to Didara Nigeria's{" "}
             <a href="#" className="text-orange-500">
               Terms and Conditions
             </a>
@@ -137,7 +138,6 @@ const CustomerLogin = () => {
         </p>
       </div>
 
-      {/* OTP Modal */}
       <Modal
         title="Enter OTP"
         open={isOtpModalVisible}

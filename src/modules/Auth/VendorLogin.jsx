@@ -8,8 +8,9 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import jumiaLogo from "../../assets/logo/jumiaLogo.png";
-import { BASE_URL, login } from "../../api";
+import joyceStoreLogo from "../../assets/logo/joycestore-logo.svg";
+import { login } from "../../api";
+import { authClient } from "../../utils/auth-client";
 
 const VendorLogin = () => {
   const navigate = useNavigate();
@@ -17,14 +18,20 @@ const VendorLogin = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${BASE_URL}/auth/google?role=vendor`;
+  const handleGoogleLogin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/vendor`,
+    });
   };
 
-  // Handle Facebook OAuth login
-  const handleFacebookLogin = () => {
-    window.location.href = `${BASE_URL}/auth/facebook?role=vendor`;
+  const handleFacebookLogin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "facebook",
+      callbackURL: `${window.location.origin}/vendor`,
+    });
   };
+
   // Handle email-based login
   const handleEmailLogin = async (values) => {
     setLoading(true);
@@ -63,9 +70,9 @@ const VendorLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex bg-white shadow-md rounded-lg overflow-hidden w-3/4 max-w-4xl">
         <div className="w-1/2 flex flex-col items-center justify-center p-10">
-          <img src={jumiaLogo} alt="JoyceStore Logo" className="h-12 mb-8" />
+          {/* <img src={joyceStoreLogo} alt="Didara Nigeria Logo" className="h-12 mb-8" /> */}
           <h1 className="text-2xl font-bold text-orange-600 mb-4">
-          JoyceStore VendorCenter
+            Didara Nigeria VendorCenter
           </h1>
 
           {showEmailForm ? (
@@ -181,13 +188,13 @@ const VendorLogin = () => {
             </div>
           )}
 
-          <Divider className="my-6">New to JoyceStore?</Divider>
+          <Divider className="my-6">New to Didara Nigeria?</Divider>
           <Button
             type="link"
             className="text-orange-600 hover:text-orange-700"
             onClick={() => navigate("/signup")}
           >
-            Sell on JoyceStore
+            Sell on Didara Nigeria
           </Button>
         </div>
 
