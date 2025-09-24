@@ -1,37 +1,27 @@
 import React from "react";
-import { Card } from "antd";
-import sideImg from "../../../assets/images/sideImg.png"
-import sideImg2 from "../../../assets/images/sideImg2.png"
+import art from "../../../assets/images/art.jpeg";
+import oxford from "../../../assets/images/oxford.jpg";
 
 export default function Rightside() {
   return (
-    <div className="hidden lg:flex lg:w-[20%] flex-col p-2 pt-0 space-y-2">
+    <div className="hidden lg:flex lg:w-[300px] xl:w-[320px] flex-col space-y-2 h-[500px] ml-auto">
       {/* First Image */}
-      <Card
-        hoverable
-        cover={
-          <img
-            src={sideImg}
-            alt="Free Delivery"
-            className="rounded-sm"
-          />
-        }
-        className="h-[50%] shadow-lg"
-      />
+      <div className="h-[248px] rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
+        <img
+          src={art}
+          alt="img"
+          className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+        />
+      </div>
 
       {/* Second Image */}
-      <Card
-        hoverable
-        cover={
-          <img
-            src={sideImg2}
-            alt="JForce Initiative"
-            className="rounded-sm"
-          />
-        }
-        className="h-[50%] shadow-lg"
-      />
+      <div className="h-[248px] rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
+        <img
+          src={oxford}
+          alt="JForce Initiative"
+          className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+        />
+      </div>
     </div>
   );
 }
-

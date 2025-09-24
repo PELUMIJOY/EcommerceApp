@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkout, getCart, removeItem, clearCart, updateCartQuantity, addCart } from "../api";
+import {
+  checkout,
+  getCart,
+  removeItem,
+  clearCart,
+  updateCartQuantity,
+  addCart,
+} from "../api";
 
 // Async thunks for API calls
 export const fetchCart = createAsyncThunk(
@@ -21,7 +28,9 @@ export const addItemToCart = createAsyncThunk(
       await addCart(userId, productId, quantity);
       return { product, quantity };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to add item to cart");
+      return rejectWithValue(
+        error.response?.data || "Failed to add item to cart"
+      );
     }
   }
 );
@@ -33,7 +42,9 @@ export const removeItemFromCart = createAsyncThunk(
       await removeItem(userId, productId);
       return { productId };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to remove item from cart");
+      return rejectWithValue(
+        error.response?.data || "Failed to remove item from cart"
+      );
     }
   }
 );
@@ -45,7 +56,9 @@ export const updateCartItemQuantity = createAsyncThunk(
       await updateCartQuantity(userId, productId, quantity);
       return { productId, quantity };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to update item quantity");
+      return rejectWithValue(
+        error.response?.data || "Failed to update item quantity"
+      );
     }
   }
 );
@@ -69,7 +82,9 @@ export const checkoutCart = createAsyncThunk(
       const result = await checkout(userId, shippingDetails);
       return result;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to process checkout");
+      return rejectWithValue(
+        error.response?.data || "Failed to process checkout"
+      );
     }
   }
 );
@@ -80,7 +95,7 @@ const initialState = {
   error: null,
   orderSuccess: false,
   orderData: null,
-  recentlyViewed: [] // Add recently viewed items array
+  recentlyViewed: [], // Add recently viewed items array
 };
 
 const cartSlice = createSlice({
@@ -90,23 +105,21 @@ const cartSlice = createSlice({
     // Local state updates for immediate UI feedback
     addToCart: (state, action) => {
       const product = action.payload;
-      const existingItem = state.items.find(
-        (item) => item.id === product.id
-      );
-      
+      const existingItem = state.items.find((item) => item.id === product.id);
+
       // Get maximum available quantity based on stock
       const maxQuantity = product.stock || Number.MAX_SAFE_INTEGER;
-      
+
       if (existingItem) {
         // Ensure we don't exceed the stock quantity
         const newQuantity = Math.min(existingItem.quantity + 1, maxQuantity);
         existingItem.quantity = newQuantity;
       } else {
-        state.items.push({ 
-          ...product, 
+        state.items.push({
+          ...product,
           quantity: 1,
           // Ensure stock information is included
-          stock: product.stock
+          stock: product.stock,
         });
       }
     },
@@ -132,29 +145,29 @@ const cartSlice = createSlice({
     // Add a product to recently viewed
     addToRecentlyViewed: (state, action) => {
       const product = action.payload;
-      
+
       // Check if the product is already in the recently viewed list
       const existingIndex = state.recentlyViewed.findIndex(
         (item) => item.id === product.id
       );
-      
+
       // If it exists, remove it so we can put it at the front
       if (existingIndex !== -1) {
         state.recentlyViewed.splice(existingIndex, 1);
       }
-      
+
       // Add the product to the beginning of the array
       // Ensure we include stock information
       state.recentlyViewed.unshift({
         ...product,
-        stock: product.stock || 0
+        stock: product.stock || 0,
       });
-      
+
       // Limit the recently viewed list to 8 items
       if (state.recentlyViewed.length > 8) {
         state.recentlyViewed.pop();
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -164,7 +177,7 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.items.map(item => ({
+        state.items = action.payload.items.map((item) => ({
           id: item.productId._id,
           title: item.productId.title || item.productId.name,
           price: item.productId.price,
@@ -172,14 +185,14 @@ const cartSlice = createSlice({
           deliveryPrice: item.productId.deliveryPrice || 0,
           quantity: item.quantity,
           productId: item.productId._id,
-          stock: item.productId.stock || 0 // Include stock information
+          stock: item.productId.stock || 0, // Include stock information
         }));
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       // Add to cart - API responses handled by thunk
       .addCase(addItemToCart.pending, (state) => {
         state.loading = true;
@@ -188,18 +201,21 @@ const cartSlice = createSlice({
         state.loading = false;
         // Update state based on API response
         const { product, quantity } = action.payload;
-        const existingItem = state.items.find(item => item.id === product.id);
-        
+        const existingItem = state.items.find((item) => item.id === product.id);
+
         if (existingItem) {
           // Ensure we don't exceed stock
           const maxQuantity = product.stock || Number.MAX_SAFE_INTEGER;
-          existingItem.quantity = Math.min(existingItem.quantity + quantity, maxQuantity);
+          existingItem.quantity = Math.min(
+            existingItem.quantity + quantity,
+            maxQuantity
+          );
         } else {
           state.items.push({
             ...product,
             quantity: quantity,
             imageUrl: product.imageUrl || product.url,
-            stock: product.stock || 0 // Include stock information
+            stock: product.stock || 0, // Include stock information
           });
         }
       })
@@ -207,19 +223,19 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       // The rest of extraReducers remain similar with stock handling added
       .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
         state.loading = false;
         // Update the specific item quantity
         const { productId, quantity } = action.payload;
-        const item = state.items.find(item => item.productId === productId);
+        const item = state.items.find((item) => item.productId === productId);
         if (item) {
           const maxQuantity = item.stock || Number.MAX_SAFE_INTEGER;
           item.quantity = Math.min(quantity, maxQuantity);
         }
       })
-      
+
       .addCase(checkoutCart.fulfilled, (state, action) => {
         state.loading = false;
         state.items = [];
@@ -229,13 +245,13 @@ const cartSlice = createSlice({
   },
 });
 
-export const { 
-  addToCart, 
-  removeFromCart, 
-  updateQuantity, 
+export const {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
   clearCarts,
   resetOrderState,
-  addToRecentlyViewed
+  addToRecentlyViewed,
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.items;

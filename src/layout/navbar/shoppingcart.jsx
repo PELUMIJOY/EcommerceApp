@@ -6,11 +6,14 @@ import { useSelector } from "react-redux";
 
 export default function ShoppingCart() {
   const cartItems = useSelector((state) => state.cart.items);
-  const totalQuantity = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  const totalQuantity = cartItems.reduce(
+    (sum, item) => sum + (item.quantity || 1),
+    0
+  );
 
   return (
     <Link to="/cart">
-      <div className="flex gap-2 items-center mr-10"> 
+      <div className="flex gap-2 items-center mr-10">
         <Badge count={totalQuantity} showZero>
           <ShoppingCartOutlined className="text-3xl text-gray-700" />
         </Badge>

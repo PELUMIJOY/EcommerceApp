@@ -3,7 +3,11 @@ import { Collapse } from "antd";
 
 const { Panel } = Collapse;
 
-export default function Moredetails({ specifications = "", details = "", features = "" }) {
+export default function Moredetails({
+  specifications = "",
+  details = "",
+  features = "",
+}) {
   return (
     <Collapse className="mt-2 rounded-lg shadow-lg">
       <Panel header="Product Details" key="1">

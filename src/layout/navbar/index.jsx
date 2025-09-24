@@ -5,12 +5,11 @@ import {
   DownOutlined,
   UpOutlined,
   CloseOutlined,
-  HeartOutlined,
   ShoppingOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu, notification } from "antd";
+import { Avatar, Button, Dropdown, Menu, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import Elementthree from "./elementthree";
 import ShoppingCart from "./shoppingcart";
@@ -20,13 +19,30 @@ import { fetchCategories, fetchItems } from "../../api";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const cart = useSelector((state) => state.cart?.items);
-  const user = useSelector((state) => state.auth.user);
+  // const user = useSelector((state) => state.auth.user);
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [categoriesData, setCategoriesData] = useState([]);
+  const reduxUser = useSelector((state) => state.auth.user);
+  const [currentUser, setCurrentUser] = useState(reduxUser);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        if (user) {
+          dispatch(loginSuccess({ user, token: user.token }));
+          setCurrentUser(user);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
+    fetchUser();
+  }, [dispatch]);
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -205,23 +221,25 @@ export default function Navbar() {
               alt="Joyce Logo"
               onClick={() => navigate("/")}
             /> */}
-            {/* <img src={joyceStoreLogo} alt="JOYCESTORE Logo" className="h-[50px] cursor-pointer" onClick={() => navigate("/")}/> */}
-            {/* <h2 className="">Didara Nigeria</h2>
+          {/* <img src={joyceStoreLogo} alt="JOYCESTORE Logo" className="h-[50px] cursor-pointer" onClick={() => navigate("/")}/> */}
+          {/* <h2 className="">Didara Nigeria</h2>
   <small>Made in Nigeria flagship mall</small>
-          </span> */} 
+          </span> */}
 
-<span className="flex flex-col space-y-1 justify-start ">
-  <Elementthree />
-  <div>
-    <h2 className="font-bold leading-tight">
-      <span className="text-orange-500 ml-10 font-extrabold">Didara</span>{' '}
-      <span className="text-black font-extrabold">Nigeria</span>
-    </h2>
-    <small className="block text-sm text-gray-600 align-middle">
-      Made in Nigeria flagship mall
-    </small>
-  </div>
-</span>
+          <span className="flex flex-col space-y-1 justify-start ">
+            <Elementthree />
+            <div>
+              <h2 className="font-bold leading-tight">
+                <span className="text-orange-500 ml-10 font-extrabold">
+                  Didara
+                </span>{" "}
+                <span className="text-black font-extrabold">Nigeria</span>
+              </h2>
+              <small className="block text-sm text-gray-600 align-middle">
+                Made in Nigeria flagship mall
+              </small>
+            </div>
+          </span>
           <div className="w-[500px] flex flex-2 gap-2 h-[40px]">
             <TableSearch
               placeholder="Search Products and categories"
@@ -246,23 +264,24 @@ export default function Navbar() {
 
           {/* User Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
+            {currentUser ? (
               <Dropdown
                 overlay={dropdownMenu}
                 trigger={["click"]}
-                visible={dropdownVisible}
+                // visible={dropdownVisible}
                 onVisibleChange={handleDropdownVisibleChange}
               >
                 <div className="cursor-pointer flex items-center space-x-2">
                   <Avatar icon={<UserOutlined />} />
-                  <span>HI, {user?.name}</span>
+
+                  <span>HI, {currentUser.name}</span>
                 </div>
               </Dropdown>
             ) : (
               <Dropdown
                 overlay={dropdownMenu}
                 trigger={["click"]}
-                visible={dropdownOpen}
+                open={dropdownOpen}
                 onVisibleChange={handleDropdownVisibleChange}
               >
                 <div className="cursor-pointer">

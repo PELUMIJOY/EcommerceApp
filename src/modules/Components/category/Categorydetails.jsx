@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-export default function CategoryDetails({  products}) {
+export default function CategoryDetails({ products }) {
   const navigate = useNavigate();
 
   return (
@@ -13,12 +13,13 @@ export default function CategoryDetails({  products}) {
       {products.map((product) => (
         <div
           key={product._id}
-          className="bg-white shadow-lg rounded-lg p-4 flex flex-col"
+          className="bg-white shadow-lg rounded-lg flex flex-col"
         >
           <img
             src={product.imageUrl}
             alt={product.title}
-            className="w-full h-48 object-cover rounded-t-lg"
+            // className="w-full h-auto rounded-lg"
+            className="max-h-full max-w-full object-contain"
           />
           <div className="mt-2">
             <Title level={5} className="line-clamp-2">

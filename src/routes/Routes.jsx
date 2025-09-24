@@ -1,3 +1,4 @@
+import OrderSuccessPage from "../common/Modal/OrderSuccessPage";
 import DashboardShell from "../layout/DashboardShell";
 import CustomerLogin from "../modules/Auth/CustomerLogin";
 import SignUp from "../modules/Auth/SignUp";
@@ -75,6 +76,7 @@ const routes = [
       { path: "cart", element: <Cart /> },
       { path: "checkout", element: <Checkout /> },
       { path: "orders", element: <OrdersPage /> },
+      { path: "success", element: <OrderSuccessPage /> },
     ],
     Cart,
   },

@@ -3,7 +3,7 @@ import { Row, Col, Button, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const SellOnJumia = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="sell-on-jumia">
       {/* Header Section */}
@@ -19,7 +19,7 @@ const SellOnJumia = () => {
               type="primary"
               size="large"
               style={{ backgroundColor: "#FF6600", border: "none" }}
-              onClick={()=> navigate("/signup")}
+              onClick={() => navigate("/signup")}
             >
               Start Selling
             </Button>
@@ -29,7 +29,9 @@ const SellOnJumia = () => {
 
       {/* Why Sell on Jumia Section */}
       <div style={{ padding: "40px", textAlign: "center" }}>
-        <h3 style={{ marginBottom: "20px" }}>Why sell on Didara Nigeria Mall?</h3>
+        <h3 style={{ marginBottom: "20px" }}>
+          Why sell on Didara Nigeria Mall?
+        </h3>
         <Row gutter={[16, 16]} justify="center">
           {[
             "Connect with more buyers",
@@ -76,8 +78,8 @@ const SellOnJumia = () => {
           <Col xs={24} md={12}>
             <Card>
               <p style={{ marginBottom: "10px" }}>
-                Selling on Didara Nigeria has been very rewarding with higher turnover
-                and good profit.
+                Selling on Didara Nigeria has been very rewarding with higher
+                turnover and good profit.
               </p>
               <p style={{ fontStyle: "italic", textAlign: "right", margin: 0 }}>
                 - Yejide Olulana, Allure Beauty Store
@@ -142,7 +144,10 @@ const SellOnJumia = () => {
             ))}
           </Row>
           <div className="text-center mt-10">
-            <Button onClick={()=> navigate("/signup")} className="bg-orange-600 text-white py-2 px-6 rounded-md hover:bg-orange-700 transition mr-4" >
+            <Button
+              onClick={() => navigate("/signup")}
+              className="bg-orange-600 text-white py-2 px-6 rounded-md hover:bg-orange-700 transition mr-4"
+            >
               Start Selling
             </Button>
           </div>

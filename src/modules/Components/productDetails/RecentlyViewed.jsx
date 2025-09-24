@@ -20,13 +20,20 @@ export default function RecentlyViewed({ items }) {
               <img
                 src={item.imageUrl || item.url}
                 alt={item.title || item.name}
-                className="w-full h-32 object-cover rounded-md"
+                // className="w-full h-32 object-cover rounded-md"
+                className="max-h-full max-w-full object-contain"
               />
-              <p className="text-sm mt-2 line-clamp-2">{item.title || item.name}</p>
-              <p className="text-orange-500 font-semibold">{formatCurrency(item.price)}</p>
+              <p className="text-sm mt-2 line-clamp-2">
+                {item.title || item.name}
+              </p>
+              <p className="text-orange-500 font-semibold">
+                {formatCurrency(item.price)}
+              </p>
               <p className="text-sm mt-1">
-                {(item.stock > 0) ? (
-                  <Text className="text-green-600">In Stock ({item.stock} left)</Text>
+                {item.stock > 0 ? (
+                  <Text className="text-green-600">
+                    In Stock ({item.stock} left)
+                  </Text>
                 ) : (
                   <Text className="text-red-600">Out of Stock</Text>
                 )}

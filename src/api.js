@@ -1,19 +1,63 @@
 import { notification } from "antd";
 import axios from "axios";
+import { authClient } from "./utils/auth-client";
 
-export const BASE_URL = "https://jumia-api-1.onrender.com";
 const isLocal = window?.location?.hostname === "localhost";
 
-// export const BASE_URL = isLocal
-//   ? "http://localhost:8000"
-//   : "https://jumia-api-1.onrender.com";
+export const BASE_URL = isLocal
+  ? "http://localhost:8000"
+  : "https://jumia-api-1.onrender.com";
 
 export const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Important for Better-Auth cookies
 });
+
+// Add request interceptor to include authentication token
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      // Get current session from Better-Auth
+      const session = await authClient.getSession();
+
+      if (session?.data?.token) {
+        // If there's a token, add it to Authorization header
+        config.headers.Authorization = `Bearer ${session.data.token}`;
+      }
+      // Note: withCredentials: true will automatically send cookies,
+      // so Better-Auth session cookies should be included
+
+      return config;
+    } catch (error) {
+      console.error("Error getting session for request:", error);
+      return config;
+    }
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle authentication errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Handle unauthorized access
+      notification.error({
+        message: "Authentication Required",
+        description: "Please log in to continue.",
+      });
+
+      // Redirect to login page
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 const handleApiError = (error, customMessage) => {
   const errorMessage =
@@ -31,7 +75,7 @@ const handleApiError = (error, customMessage) => {
   throw error;
 };
 
-// Categories API
+// Categories API (unchanged)
 export const fetchCategories = async () => {
   try {
     const response = await api.get("/api/categories");
@@ -80,7 +124,7 @@ export const deleteCategory = async (id) => {
   }
 };
 
-// Items API
+// Items API (unchanged)
 export const fetchItems = async () => {
   try {
     const response = await api.get("/api/items");
@@ -165,7 +209,7 @@ export const deleteItems = async (id) => {
   }
 };
 
-// Authentication APIs
+// Updated Authentication APIs - Now using Better-Auth endpoints
 export const signup = async (userData) => {
   try {
     const response = await api.post("/auth/signup", userData);
@@ -205,33 +249,7 @@ export const logout = async () => {
   }
 };
 
-// OTP APIs
-export const requestOtp = async (identifier) => {
-  try {
-    const response = await api.post("/otp/request", identifier);
-    notification.success({
-      message: "Success",
-      description: "OTP sent successfully",
-    });
-    return response.data;
-  } catch (error) {
-    handleApiError(error, "Failed to send OTP");
-  }
-};
-
-export const verifyOtp = async (otpData) => {
-  try {
-    const response = await api.post("/otp/verify", otpData);
-    notification.success({
-      message: "Success",
-      description: "OTP verified successfully",
-    });
-    return response.data;
-  } catch (error) {
-    handleApiError(error, "OTP verification failed");
-  }
-};
-
+// Cart APIs (unchanged)
 export const addCart = async (userId, productId, quantity) => {
   try {
     const response = await api.post("api/cart/add", {
@@ -302,5 +320,128 @@ export const checkout = async (userId, shippingDetails) => {
   } catch (error) {
     console.error("Error during checkout:", error);
     throw error;
+  }
+};
+
+// Fixed initiate function with proper error handling and authentication
+// export const initiate = async (
+//   user,
+//   cartItems,
+//   totalAmount,
+//   phone,
+//   address
+// ) => {
+//   try {
+//     // Validate required parameters
+//     if (!user || !cartItems || !Array.isArray(cartItems)) {
+//       throw new Error("Invalid parameters: user and cartItems are required");
+//     }
+
+//     if (cartItems.length === 0) {
+//       throw new Error("Cart is empty");
+//     }
+
+//     // Map cart items to the expected format
+//     const mappedItems = cartItems.map((item) => {
+//       // Handle different possible structures of cart items
+//       const productId = item._id || item.id || item.productId;
+//       const itemName = item.name || item.title;
+//       const itemPrice =
+//         typeof item.price === "string" ? parseInt(item.price) : item.price;
+//       const itemImage = item.image || item.imageUrl || item.url;
+
+//       return {
+//         product: productId,
+//         name: itemName,
+//         price: itemPrice,
+//         quantity: item.quantity || 1,
+//         image: itemImage,
+//       };
+//     });
+
+//     const requestData = {
+//       userId: user?.id || user?._id,
+//       items: mappedItems,
+//       totalAmount,
+//       shippingDetails: {
+//         phoneNumber: phone,
+//         address,
+//       },
+//       email: user.email,
+//     };
+//     const response = await api.post("/api/payments/initiate", requestData);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error initializing payment:", error);
+//   }
+// };
+
+export const initiate = async (
+  user,
+  cartItems,
+  totalAmount,
+  phone = "",
+  address = ""
+) => {
+  try {
+    // Validate required parameters
+    if (!user || !cartItems || !Array.isArray(cartItems)) {
+      throw new Error("Invalid parameters: user and cartItems are required");
+    }
+
+    if (cartItems.length === 0) {
+      throw new Error("Cart is empty");
+    }
+
+    if (!user.email) {
+      throw new Error("User email is required for payment");
+    }
+
+    // Map cart items to the expected format
+    const mappedItems = cartItems.map((item) => {
+      const productId = item._id || item.id || item.productId;
+      const itemName = item.name || item.title;
+      const itemPrice =
+        typeof item.price === "string" ? parseInt(item.price, 10) : item.price;
+      const itemImage = item.image || item.imageUrl || item.url;
+
+      // Validate required fields
+      if (!productId || !itemName || !itemPrice) {
+        throw new Error(`Invalid item data: ${JSON.stringify(item)}`);
+      }
+
+      return {
+        product: productId,
+        name: itemName,
+        price: itemPrice,
+        quantity: item.quantity || 1,
+        image: itemImage,
+      };
+    });
+
+    const requestData = {
+      userId: user.id || user._id,
+      items: mappedItems,
+      totalAmount: Number(totalAmount),
+      shippingDetails: {
+        phoneNumber: phone || user.phone || "",
+        address: address || user.deliveryAddress || user.address || "",
+      },
+      email: user.email,
+    };
+
+    console.log("Initiating payment with data:", requestData);
+
+    const response = await api.post("/api/payments/initiate", requestData);
+    return response.data;
+  } catch (error) {
+    console.error("Error initializing payment:", error);
+
+    // Re-throw with a more user-friendly message
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+
+    throw new Error(error.message || "Payment initialization failed");
   }
 };

@@ -1,74 +1,78 @@
 import React, { useState } from "react";
-import { Button, Input, Modal, Form, message } from "antd";
-import {
-  FacebookOutlined,
-  GoogleOutlined,
-} from "@ant-design/icons";
+import { Button, Input, Form, message } from "antd";
+import { GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { requestOtp, verifyOtp } from "../../api";
-import { authClient } from "../../utils/auth-client";
+import {
+  signInWithEmail,
+  signInWithGoogle,
+  signInWithFacebook,
+} from "../../utils/auth-client";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../app/authSlice";
 
 const CustomerLogin = () => {
   const [form] = Form.useForm();
-  const [isOtpModalVisible, setIsOtpModalVisible] = useState(false);
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  // Handle Google OAuth login - fixed to use full URL path
-  const handleGoogleLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: `${window.location.origin}/cart`,
-    });
-  };
-
-  // Handle Facebook OAuth login
-  const handleFacebookLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "facebook",
-      callbackURL: `${window.location.origin}/cart`,
-    });
-  };
-
-  const handleContinue = async () => {
+  const handleEmailLogin = async () => {
     try {
+      setLoading(true);
       await form.validateFields();
-      const identifierValue = form.getFieldValue("identifier");
+      const values = form.getFieldsValue();
 
-      if (!identifierValue) {
-        return message.error("Please enter an email or phone number.");
-      }
+      // await signInWithEmail(values.email, values.password);
+      // sign in
+      const { user, token } = await signInWithEmail(
+        values.email,
+        values.password
+      );
 
-      setIdentifier(identifierValue);
-
-      const payload = identifierValue.includes("@")
-        ? { email: identifierValue }
-        : { phone: identifierValue };
-
-      await requestOtp(payload);
-      setIsOtpModalVisible(true);
-      message.success("OTP has been sent to your email or phone number");
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      message.error(error.message || "Failed to send OTP");
-    }
-  };
-
-  const handleVerifyOtp = async (values) => {
-    try {
-      await verifyOtp({
-        identifier,
-        otp: values.otp,
-      });
+      // update Redux
+      dispatch(
+        loginSuccess({
+          user: {
+            ...user,
+            id: user._id,
+          },
+          token,
+        })
+      );
 
       message.success("Login successful");
-      setIsOtpModalVisible(false);
       navigate("/cart");
     } catch (error) {
-      message.error(error.message || "OTP verification failed");
+      console.error("Login error:", error);
+      message.error(error.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      // await signInWithGoogle("/cart");
+      const { user, token } = await signInWithGoogle();
+
+      dispatch(loginSuccess({ user, token }));
+      message.success("Login successful");
+      navigate("/cart");
+    } catch (error) {
+      message.error(error.message || "Google login failed");
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    try {
+      const { user, token } = await signInWithFacebook();
+      dispatch(loginSuccess({ user, token }));
+      message.success("Login successful");
+      navigate("/cart");
+    } catch (error) {
+      message.error(error.message || "Facebook login failed");
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-white">
@@ -79,25 +83,34 @@ const CustomerLogin = () => {
           </div>
         </div>
         <h1 className="text-2xl font-bold mb-2">Welcome to Didara Nigeria</h1>
+
         <Form form={form} layout="vertical" className="space-y-4">
           <Form.Item
             label="Email"
-            name="identifier"
+            name="email"
             rules={[
-              {
-                required: true,
-                message: "Please enter your email!",
-              },
+              { required: true, message: "Please enter your email!" },
+              { type: "email", message: "Please enter a valid email!" },
             ]}
           >
             <Input placeholder="Enter your email" />
           </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please enter your password!" }]}
+          >
+            <Input.Password placeholder="Enter your password" />
+          </Form.Item>
+
           <Button
             type="primary"
             className="w-full bg-orange-500 border-none text-white mb-4"
-            onClick={handleContinue}
+            onClick={handleEmailLogin}
+            loading={loading}
           >
-            Continue
+            Login
           </Button>
 
           <p className="text-gray-500 text-sm mb-4">
@@ -129,34 +142,27 @@ const CustomerLogin = () => {
             </Button>
           </div>
         </Form>
+
         <p className="text-gray-500 text-sm mt-4">
-          For further support, visit the{" "}
+          Don't have an account?{" "}
+          <span
+            className="text-orange-500 cursor-pointer"
+            onClick={() => navigate("/register")}
+          >
+            Sign up here
+          </span>
+        </p>
+
+        <p className="text-gray-500 text-sm mt-4">
+          For further support, visit the
           <a href="#" className="text-orange-500">
             Help Center
           </a>
           or contact our customer service team.
         </p>
       </div>
-
-      <Modal
-        title="Enter OTP"
-        open={isOtpModalVisible}
-        onCancel={() => setIsOtpModalVisible(false)}
-        footer={null}
-      >
-        <Form form={form} onFinish={handleVerifyOtp}>
-          <Form.Item
-            name="otp"
-            rules={[{ required: true, message: "Please enter OTP" }]}
-          >
-            <Input placeholder="Enter OTP" />
-          </Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Verify OTP
-          </Button>
-        </Form>
-      </Modal>
     </div>
   );
 };
+
 export default CustomerLogin;

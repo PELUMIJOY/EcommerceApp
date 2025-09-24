@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Divider, notification, Spin } from "antd";
+import { Button, Form, Input, Divider, Spin } from "antd";
 import {
   GoogleOutlined,
   MailOutlined,
@@ -8,9 +8,11 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import joyceStoreLogo from "../../assets/logo/joycestore-logo.svg";
-import { login } from "../../api";
-import { authClient } from "../../utils/auth-client";
+import {
+  signInWithEmail,
+  signInWithGoogle,
+  signInWithFacebook,
+} from "../../utils/auth-client";
 
 const VendorLogin = () => {
   const navigate = useNavigate();
@@ -19,33 +21,43 @@ const VendorLogin = () => {
   const [form] = Form.useForm();
 
   const handleGoogleLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: `${window.location.origin}/vendor`,
-    });
+    try {
+      const { user, token } = await signInWithGoogle();
+      dispatch(loginSuccess({ user, token }));
+      message.success("Login successful");
+      navigate("/vendor");
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
   };
 
   const handleFacebookLogin = async () => {
-    const data = await authClient.signIn.social({
-      provider: "facebook",
-      callbackURL: `${window.location.origin}/vendor`,
-    });
+    try {
+      const { user, token } = await signInWithFacebook();
+      dispatch(loginSuccess({ user, token }));
+      message.success("Login successful");
+      navigate("/vendor");
+    } catch (error) {
+      console.error("Facebook login error:", error);
+    }
   };
 
   // Handle email-based login
   const handleEmailLogin = async (values) => {
     setLoading(true);
     try {
-      const response = await login(values);
+      const result = await signInWithEmail(values.email, values.password);
 
-      if (response && response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
+      // if (result) {
+      //   navigate("/vendor");
+      //   form.resetFields();
+      // }
 
-        if (response.token) {
-          localStorage.setItem("token", response.token);
+      if (result?.user && result?.token) {
+        dispatch(loginSuccess({ user: result.user, token: result.token }));
+        if (result.user.role === "vendor") {
+          navigate("/vendor");
         }
-
-        navigate("/vendor");
         form.resetFields();
       }
     } catch (error) {
@@ -70,7 +82,6 @@ const VendorLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex bg-white shadow-md rounded-lg overflow-hidden w-3/4 max-w-4xl">
         <div className="w-1/2 flex flex-col items-center justify-center p-10">
-          {/* <img src={joyceStoreLogo} alt="Didara Nigeria Logo" className="h-12 mb-8" /> */}
           <h1 className="text-2xl font-bold text-orange-600 mb-4">
             Didara Nigeria VendorCenter
           </h1>
@@ -143,16 +154,6 @@ const VendorLogin = () => {
                   </Button>
                 </div>
               </Form>
-
-              {/* <div className="mt-4 text-center">
-                <Button
-                  type="link"
-                  className="text-gray-500"
-                  onClick={() => navigate("/forgot-password")}
-                >
-                  Forgot Password?
-                </Button>
-              </div> */}
             </Spin>
           ) : (
             <div className="space-y-4 w-full">

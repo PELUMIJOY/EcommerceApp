@@ -1,6 +1,6 @@
 import React from "react";
 import { Breadcrumb } from "antd";
-import { Link } from "react-router-dom"; // React Router for navigation
+import { Link } from "react-router-dom";
 
 export default function Breadcrumbs({ category, brand, title }) {
   return (
@@ -18,4 +18,3 @@ export default function Breadcrumbs({ category, brand, title }) {
     </div>
   );
 }
-

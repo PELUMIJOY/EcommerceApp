@@ -24,7 +24,10 @@ export default function Message() {
 
       {/* Home Button */}
       <Link href="/">
-        <Button type="primary" className="mt-3 bg-yellow-500 text-white hover:bg-yellow-600">
+        <Button
+          type="primary"
+          className="mt-3 bg-yellow-500 text-white hover:bg-yellow-600"
+        >
           Home
         </Button>
       </Link>

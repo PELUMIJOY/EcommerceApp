@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Radio, Select, Checkbox, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import {
-  fetchAllZones,
-  fetchCountries,
-  fetchZonesByCountry,
-  requestOtp,
-  signup,
-  verifyOtp,
-} from "../../api";
+import { fetchAllZones, fetchCountries, fetchZonesByCountry } from "../../api";
+import { signUpWithEmail } from "../../utils/auth-client";
 
 const { Option } = Select;
 
@@ -17,17 +10,22 @@ const SignUp = () => {
   const [step, setStep] = useState(1);
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
+  const [loading, setLoading] = useState(false);
   const [vendorData, setVendorData] = useState({
     country: "",
     shoppingZone: "",
     shopName: "",
-    accountType: ""
+    accountType: "",
+    email: "",
+    password: "",
+    name: "",
+    lastName: "",
+    phone: "",
   });
 
   const [countries, setCountries] = useState([]);
   const [zones, setZones] = useState([]);
-  const [loading, setLoading] = useState({
+  const [loadingData, setLoadingData] = useState({
     countries: false,
     zones: false,
   });
@@ -42,12 +40,12 @@ const SignUp = () => {
     const selectedCountry = countries.find((country) => country.name === value);
     if (selectedCountry) {
       await fetchZonesData(selectedCountry.code);
-      setVendorData(prev => ({ ...prev, country: value }));
+      setVendorData((prev) => ({ ...prev, country: value }));
     }
   };
 
   const fetchCountriesData = async () => {
-    setLoading((prev) => ({ ...prev, countries: true }));
+    setLoadingData((prev) => ({ ...prev, countries: true }));
     try {
       const response = await fetchCountries();
       setCountries(response.data);
@@ -55,12 +53,12 @@ const SignUp = () => {
       message.error("Failed to load countries: " + error.message);
       console.error("Error fetching countries:", error);
     } finally {
-      setLoading((prev) => ({ ...prev, countries: false }));
+      setLoadingData((prev) => ({ ...prev, countries: false }));
     }
   };
 
   const fetchZonesData = async (countryCode) => {
-    setLoading((prev) => ({ ...prev, zones: true }));
+    setLoadingData((prev) => ({ ...prev, zones: true }));
     try {
       const response = countryCode
         ? await fetchZonesByCountry(countryCode)
@@ -70,12 +68,13 @@ const SignUp = () => {
       message.error("Failed to load zones: " + error.message);
       console.error("Error fetching zones:", error);
     } finally {
-      setLoading((prev) => ({ ...prev, zones: false }));
+      setLoadingData((prev) => ({ ...prev, zones: false }));
     }
   };
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       await form.validateFields();
       const values = form.getFieldsValue();
 
@@ -86,86 +85,72 @@ const SignUp = () => {
           );
           if (selectedCountry) {
             await fetchZonesData(selectedCountry.code);
-            setVendorData(prev => ({ ...prev, country: values.country }));
+            setVendorData((prev) => ({ ...prev, country: values.country }));
           }
           setStep(2);
           break;
 
         case 2:
-          setIdentifier(values.email);
-          await requestOtp({ email: values.email });
-          message.success("Verification code sent!");
+          setVendorData((prev) => ({
+            ...prev,
+            email: values.email,
+          }));
           setStep(3);
           break;
 
         case 3:
-          await verifyOtp({ identifier, otp: values.verificationCode });
-          message.success("Verified successfully!");
-          setStep(4);
-          break;
-
-        case 4:
           // Store personal information
-          setVendorData(prev => ({
+          setVendorData((prev) => ({
             ...prev,
             name: values.name,
             lastName: values.lastName,
             phone: values.phone,
-            password: values.password
+            password: values.password,
           }));
-          setStep(5);
+          setStep(4);
           break;
 
-        case 5:
+        case 4:
           // Ensure agreement is checked
           if (!values.agree) {
             return message.error("You must agree to the terms to proceed!");
           }
 
-          // Update vendor data with shop information
-          setVendorData(prev => ({
-            ...prev,
-            shopName: values.shopName,
-            shoppingZone: values.shoppingZone,
-            accountType: values.accountType
-          }));
-
           // Combine all data for final submission
           const signupData = {
-            email: identifier,
+            email: vendorData.email,
             password: vendorData.password,
             name: vendorData.name,
             lastName: vendorData.lastName,
             phone: vendorData.phone,
-            provider: "email",
             role: "vendor",
             country: vendorData.country,
             shoppingZone: values.shoppingZone,
             shopName: values.shopName,
-            accountType: values.accountType
+            accountType: values.accountType,
           };
 
           console.log("Sending signup data:", signupData);
-          
+
           try {
-            await signup(signupData);
+            await signUpWithEmail(signupData);
             message.success("Account created successfully!");
             navigate("/VendorLogin");
           } catch (error) {
             console.error("Signup error:", error);
             message.error(
-              error.response?.data?.message || 
-              error.message || 
-              "Failed to create account. Please try again."
+              error.message || "Failed to create account. Please try again."
             );
           }
           break;
       }
     } catch (error) {
       message.error(error.message || "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
-  
+
   const stepDetails = [
     {
       heading: "Sell on Didara Nigeria",
@@ -175,10 +160,6 @@ const SignUp = () => {
       heading: "Setup your account",
       description:
         "Please provide your email address to create your seller account",
-    },
-    {
-      heading: "Setup your account",
-      description: "Please provide the verification code sent to your email",
     },
     {
       heading: "Personal Information",
@@ -215,7 +196,7 @@ const SignUp = () => {
               >
                 <Select
                   placeholder="Select your country"
-                  loading={loading.countries}
+                  loading={loadingData.countries}
                   showSearch
                   optionFilterProp="children"
                   onChange={handleCountryChange}
@@ -248,21 +229,6 @@ const SignUp = () => {
             )}
 
             {step === 3 && (
-              <Form.Item
-                label="Verification Code"
-                name="verificationCode"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter the verification code!",
-                  },
-                ]}
-              >
-                <Input placeholder="Enter verification code" />
-              </Form.Item>
-            )}
-
-            {step === 4 && (
               <>
                 <Form.Item
                   label="First Name"
@@ -298,9 +264,9 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input 
-                    placeholder="Enter your phone number" 
-                    autoComplete="off" 
+                  <Input
+                    placeholder="Enter your phone number"
+                    autoComplete="off"
                   />
                 </Form.Item>
                 <Form.Item
@@ -314,15 +280,15 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input.Password 
-                    placeholder="Enter your password" 
+                  <Input.Password
+                    placeholder="Enter your password"
                     autoComplete="new-password"
                   />
                 </Form.Item>
               </>
             )}
 
-            {step === 5 && (
+            {step === 4 && (
               <>
                 <Form.Item
                   label="Account Type"
@@ -365,7 +331,7 @@ const SignUp = () => {
                 >
                   <Select
                     placeholder="Select your shopping zone"
-                    loading={loading.zones}
+                    loading={loadingData.zones}
                     showSearch
                     optionFilterProp="children"
                     filterOption={(input, option) =>
@@ -397,9 +363,10 @@ const SignUp = () => {
                   ]}
                 >
                   <Checkbox>
-                    I hereby confirm that I have read and I agree to the Didara Nigeria Mall
-                    seller contract, Didara Nigeria codes, policies and guidelines and
-                    Privacy Notice and Cookie Notice referenced therein.
+                    I hereby confirm that I have read and I agree to the Didara
+                    Nigeria Mall seller contract, Didara Nigeria codes, policies
+                    and guidelines and Privacy Notice and Cookie Notice
+                    referenced therein.
                   </Checkbox>
                 </Form.Item>
               </>
@@ -410,9 +377,10 @@ const SignUp = () => {
                 type="primary"
                 htmlType="button"
                 onClick={handleSubmit}
+                loading={loading}
                 className="bg-[#FFA500] w-full"
               >
-                {step < 5 ? "Next" : "Submit"}
+                {step < 4 ? "Next" : "Submit"}
               </Button>
             </Form.Item>
           </Form>
@@ -420,7 +388,7 @@ const SignUp = () => {
         <p className="p-2">
           Already have an account?{" "}
           <span
-            className="text-[#FFA500]"
+            className="text-[#FFA500] cursor-pointer"
             onClick={() => navigate("/VendorLogin")}
           >
             Sign in

@@ -5,7 +5,6 @@ import RecomHeader from "./header";
 import { Skeleton } from "antd";
 import { formatCurrency } from "../../../utils/helper";
 
-
 const gaming = [
   { id: 1, title: "Gaming Product 1", url: "image1.jpg", productprice: 1500 },
   { id: 2, title: "Gaming Product 2", url: "image2.jpg", productprice: 2000 },
@@ -18,7 +17,7 @@ export default function Gaming() {
   useEffect(() => {
     const fetchProducts = async () => {
       // const products = await fetchProductsbyCategory("gaming");
-      const products = gaming
+      const products = gaming;
       setPosts(products);
       setLoading(false);
     };

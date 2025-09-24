@@ -12,14 +12,7 @@ import {
   selectCartItems,
   addToRecentlyViewed,
 } from "../../../app/cartSlice";
-import {
-  Button,
-  Badge,
-  Carousel,
-  Rate,
-  notification,
-  InputNumber,
-} from "antd";
+import { Button, Badge, Carousel, Rate, notification, InputNumber } from "antd";
 import { useLocation, useParams } from "react-router-dom";
 import RecentlyViewed from "./RecentlyViewed";
 
@@ -206,65 +199,6 @@ export default function ProductDetail() {
                   </span>
                 )}
               </p>
-
-              {/* {maxStock > 0 && (
-                quantity === 0 ? (
-                  <Button
-                    type="primary"
-                    block
-                    className="bg-orange-500 mt-5 text-xl"
-                    onClick={addToCartHandler}
-                  >
-                    Add to Cart
-                  </Button>
-                ) : (
-                  <div className="mt-5">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <span className="text-sm">Quantity:</span>
-                      <InputNumber
-                        min={0}
-                        max={maxStock}
-                        value={quantity}
-                        onChange={updateCartQuantity}
-                        className="w-20"
-                      />
-                      <span className="text-sm text-gray-500">
-                        (Max: {maxStock})
-                      </span>
-                    </div>
-                    </div>
-                  )
-                )}
-
-              {quantity === 0 ? (
-                <Button
-                  type="primary"
-                  block
-                  className="bg-orange-500 mt-5 text-xl"
-                  onClick={addToCartHandler}
-                >
-                  Add to Cart
-                </Button>
-              ) : (
-                <div className="flex items-center mt-5 space-x-3">
-                  <Button
-                    type="primary"
-                    onClick={decrementQuantity}
-                    className="bg-orange-500 text-lg"
-                  >
-                    -
-                  </Button>
-                  <span className="text-xl">{quantity}</span>
-                  <Button
-                    type="primary"
-                    onClick={incrementQuantity}
-                    className="bg-orange-500 text-lg"
-                  >
-                    +
-                  </Button>
-                  <p> {quantity} item(s) added </p>
-                </div>
-              )} */}
               {maxStock > 0 &&
                 (quantity === 0 ? (
                   <Button

@@ -65,7 +65,7 @@ const EditableCell = ({
 
 const ManageProducts = () => {
   const [form] = Form.useForm();
-  const [products, setProducts] = useState([]); 
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingKey, setEditingKey] = useState("");
   const navigate = useNavigate();
@@ -123,16 +123,16 @@ const ManageProducts = () => {
       const row = await form.validateFields();
       const newData = [...products];
       const index = newData.findIndex((item) => item._id === key);
-  
+
       if (index > -1) {
         const item = newData[index];
         // updatedItem now sends category title
         const updatedItem = { ...item, ...row, category: row.category };
-  
+
         console.log("Updating item:", key, updatedItem);
-  
+
         const response = await updateItems(key, updatedItem);
-  
+
         if (response && !response.error) {
           newData[index] = response;
           setProducts([...newData]);
@@ -148,7 +148,7 @@ const ManageProducts = () => {
       console.error("Validation Failed:", errInfo);
     }
   };
-  
+
   // Define table columns
   const columns = [
     {
