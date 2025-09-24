@@ -16,6 +16,8 @@ import ShoppingCart from "./shoppingcart";
 import TableSearch from "../../common/TableSearch";
 import joyceStoreLogo from "../../assets/logo/joycestore-logo.svg";
 import { fetchCategories, fetchItems } from "../../api";
+import { getCurrentUser } from "../../utils/auth-client";
+import { loginSuccess } from "../../app/authSlice";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -274,7 +276,7 @@ export default function Navbar() {
                 <div className="cursor-pointer flex items-center space-x-2">
                   <Avatar icon={<UserOutlined />} />
 
-                  <span>HI, {currentUser.name}</span>
+                  <span>Hi, {currentUser.name}</span>
                 </div>
               </Dropdown>
             ) : (
