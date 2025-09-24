@@ -7,9 +7,9 @@ import Leftside from "./leftside";
 
 const DashboardShell = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen">
       <Navbar />
-      <div className="flex flex-1">
+      <div className="flex">
         {/* Sticky Sidebar */}
         <div className="hidden md:block md:w-[280px] lg:w-[300px] sticky top-0 h-screen overflow-y-auto">
           <Leftside />
